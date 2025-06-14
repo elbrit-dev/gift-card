@@ -1,59 +1,82 @@
 "use client";
 import React from "react";
-import { Users, CreditCard, Loader, Briefcase } from "lucide-react";
+import {
+  CreditCard,
+  Briefcase,
+  CheckCircle,
+  Clock,
+  FileClock,
+  AlertCircle,
+} from "lucide-react";
 
 interface DashboardSummaryCardsProps {
   totalCards: number;
-  activeCards: number;
-  pendingActivation: number;
   salesTeams: number;
+  cardsByStatus?: Record<string, any[]>;
 }
-
-const CARD_CONFIG = [
-  {
-    label: "Total Cards",
-    icon: <CreditCard size={28} className="text-blue-600" />,
-    key: "totalCards",
-    border: "border-blue-100",
-  },
-  {
-    label: "Active Cards",
-    icon: <Users size={28} className="text-green-600" />,
-    key: "activeCards",
-    border: "border-green-100",
-  },
-  {
-    label: "Pending Activation",
-    icon: <Loader size={28} className="text-yellow-500" />,
-    key: "pendingActivation",
-    border: "border-yellow-100",
-  },
-  {
-    label: "Sales Teams",
-    icon: <Briefcase size={28} className="text-indigo-500" />,
-    key: "salesTeams",
-    border: "border-indigo-100",
-  },
-];
 
 const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({
   totalCards,
-  activeCards,
-  pendingActivation,
   salesTeams,
+  cardsByStatus = {},
 }) => {
-  const data = { totalCards, activeCards, pendingActivation, salesTeams };
+  const getCount = (status: string) => cardsByStatus[status]?.length || 0;
+
+  const cards = [
+    {
+      label: "Total Cards",
+      value: totalCards,
+      icon: <CreditCard size={28} className="text-blue-600" />,
+      border: "border-blue-100",
+    },
+    // {
+    //   label: "Sales Teams",
+    //   value: salesTeams,
+    //   icon: <Briefcase size={28} className="text-indigo-500" />,
+    //   border: "border-indigo-100",
+    // },
+    {
+      label: "To Be Filled",
+      value: getCount("tobefilled"),
+      icon: <FileClock size={28} className="text-gray-500" />,
+      border: "border-gray-100",
+    },
+    {
+      label: "Active",
+      value: getCount("active"),
+      icon: <CheckCircle size={28} className="text-green-600" />,
+      border: "border-green-100",
+    },
+    {
+      label: "To Be Activated",
+      value: getCount("tobeactivated"),
+      icon: <Clock size={28} className="text-yellow-600" />,
+      border: "border-yellow-100",
+    },
+    {
+      label: "Received",
+      value: getCount("received"),
+      icon: <CreditCard size={28} className="text-blue-500" />,
+      border: "border-blue-200",
+    },
+    {
+      label: "Under Verification",
+      value: getCount("underverification"),
+      icon: <AlertCircle size={28} className="text-orange-500" />,
+      border: "border-orange-200",
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      {CARD_CONFIG.map((item) => (
+    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+      {cards.map((item, index) => (
         <div
-          key={item.key}
+          key={index}
           className={`flex items-center bg-white dark:bg-gray-900 border ${item.border} rounded-2xl shadow-md px-6 py-5 min-h-[92px] transition hover:shadow-lg`}
         >
           <div className="mr-4 flex-shrink-0">{item.icon}</div>
           <div>
-            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">{data[item.key]}</div>
+            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">{item.value}</div>
             <div className="text-sm text-gray-500 dark:text-gray-300 font-medium mt-0.5">{item.label}</div>
           </div>
         </div>

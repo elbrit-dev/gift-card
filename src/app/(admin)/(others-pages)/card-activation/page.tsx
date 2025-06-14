@@ -7,25 +7,30 @@ import BulkActionsFooter from "@/components/card-activation/BulkActionsFooter";
 // --- Constants ---
 const PAGE_SIZE = 5;
 
+// --- Types ---
+type GiftCard = {
+  cardNo: string;
+  tin: string;
+  serial: string;
+  expiry: string;
+  amount: number;
+  status: string;
+  createdDate: string;
+  salesTeam: string;
+};
+
 // --- Main Page ---
 export default function CardActivationPage() {
-  // --- States ---
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState<GiftCard[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Paging/filter/search
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [bulkInput, setBulkInput] = useState("");
-
-  // Selected cardNos (use a Set for quick lookup)
-  const [selectedCardNos, setSelectedCardNos] = useState(new Set());
-
-  // Action status
+  const [selectedCardNos, setSelectedCardNos] = useState<Set<string>>(new Set());
   const [isActivating, setIsActivating] = useState(false);
 
-  // --- Fetch cards from API on mount ---
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -34,7 +39,7 @@ export default function CardActivationPage() {
         if (!res.ok) throw new Error("Failed to fetch cards");
         return res.json();
       })
-      .then((data) => {
+      .then((data: GiftCard[]) => {
         setCards(data || []);
         setLoading(false);
       })
@@ -44,7 +49,6 @@ export default function CardActivationPage() {
       });
   }, []);
 
-  // --- Filtered cards ---
   const filteredCards = useMemo(() => {
     if (!searchTerm.trim()) return cards;
     const term = searchTerm.toLowerCase();
@@ -58,44 +62,35 @@ export default function CardActivationPage() {
     );
   }, [cards, searchTerm]);
 
-  // --- Pagination ---
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
   const pagedCards = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
     return filteredCards.slice(start, start + PAGE_SIZE);
   }, [filteredCards, page]);
 
-  // --- Selection logic ---
-  const handleRowSelect = (cardNoOrAll) => {
+  const handleRowSelect = (cardNoOrAll: string) => {
     if (cardNoOrAll === "all") {
-        // Select/Deselect all cards in the current filter (not just the current page)
-        const allFilteredCardNos = filteredCards.map((c) => c.cardNo);
-        const isAllSelected = allFilteredCardNos.every((n) => selectedCardNos.has(n));
-        const updated = new Set(selectedCardNos);
-        if (isAllSelected) {
-        // Unselect all
+      const allFilteredCardNos = filteredCards.map((c) => c.cardNo);
+      const isAllSelected = allFilteredCardNos.every((n) => selectedCardNos.has(n));
+      const updated = new Set(selectedCardNos);
+      if (isAllSelected) {
         allFilteredCardNos.forEach((n) => updated.delete(n));
-        } else {
-        // Select all
+      } else {
         allFilteredCardNos.forEach((n) => updated.add(n));
-        }
-        setSelectedCardNos(updated);
+      }
+      setSelectedCardNos(updated);
     } else {
-        // Toggle individual card
-        const updated = new Set(selectedCardNos);
-        if (updated.has(cardNoOrAll)) updated.delete(cardNoOrAll);
-        else updated.add(cardNoOrAll);
-        setSelectedCardNos(updated);
+      const updated = new Set(selectedCardNos);
+      if (updated.has(cardNoOrAll)) updated.delete(cardNoOrAll);
+      else updated.add(cardNoOrAll);
+      setSelectedCardNos(updated);
     }
   };
 
-
-  // --- Select All Checkbox state (for BulkControlsSection) ---
   const allSelected =
     pagedCards.length > 0 &&
     pagedCards.every((card) => selectedCardNos.has(card.cardNo));
 
-  // --- Bulk select by numbers ---
   const handleBulkSelect = () => {
     if (!bulkInput.trim()) return;
     const bulkCardNos = bulkInput
@@ -109,44 +104,34 @@ export default function CardActivationPage() {
     setBulkInput("");
   };
 
-  // --- Search/filter trigger ---
   const handleSearch = () => setPage(1);
-
-  // --- Paging handlers ---
   const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
   const handleNextPage = () => setPage((p) => Math.min(totalPages, p + 1));
 
-  // --- Activate Selected (Client-Only) ---
   const handleActivate = async () => {
     if (selectedCardNos.size === 0) return;
     setIsActivating(true);
-
     const cardNosArray = Array.from(selectedCardNos);
-
     try {
-        const response = await fetch("/api/cards/activate", {
+      const response = await fetch("/api/cards/activate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cardNos: cardNosArray }),
-        });
+      });
 
-        const data = await response.json();
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to activate cards");
 
-        if (!response.ok) throw new Error(data.error || "Failed to activate cards");
-
-        // Refetch updated cards from DB
-        const refreshed = await fetch("/api/cards").then((res) => res.json());
-        setCards(refreshed || []);
-        setSelectedCardNos(new Set());
-    } catch (error) {
-        alert(error.message || "Error activating cards");
+      const refreshed = await fetch("/api/cards").then((res) => res.json());
+      setCards(refreshed || []);
+      setSelectedCardNos(new Set());
+    } catch (error: any) {
+      alert(error.message || "Error activating cards");
     } finally {
-        setIsActivating(false);
+      setIsActivating(false);
     }
   };
 
-
-  // --- Export Selected ---
   const handleExport = () => {
     const selected = cards.filter((c) => selectedCardNos.has(c.cardNo));
     if (selected.length === 0) return alert("No cards selected to export!");
@@ -169,13 +154,12 @@ export default function CardActivationPage() {
           c.expiry,
           c.amount,
           c.status,
-          c.createdDate, // if your API returns this, otherwise remove
+          c.createdDate,
           c.salesTeam,
         ].join(",")
       ),
     ].join("\n");
 
-    // Download as CSV file
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -185,7 +169,6 @@ export default function CardActivationPage() {
     URL.revokeObjectURL(url);
   };
 
-  // --- Render ---
   return (
     <div className="container mx-auto max-w-5xl py-6">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Card Activation</h2>

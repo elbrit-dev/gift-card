@@ -8,7 +8,7 @@ const pool = new Pool({
 
 export async function GET() {
   try {
-    // 1. Fetch all cards from GiftCardDetails with extra details
+    // 1. Fetch all cards
     const { rows: allCards } = await pool.query(`
       SELECT 
         "salesTeam", 
@@ -28,19 +28,23 @@ export async function GET() {
       ORDER BY "createdDate" DESC
     `);
 
-    // Categorize cards
-    const activated = allCards.filter(c => c.status === "active");
-    const tobeactivated = allCards.filter(c => c.status === "tobeactivated");
-    const inprocess = allCards.filter(
-      c => c.status !== "active" && c.status !== "tobeactivated"
-    );
+    // Get distinct cards per status
+    const cardsByStatus = {};
+    allCards.forEach(card => {
+      const status = card.status || "unknown";
+      if (!cardsByStatus[status]) {
+        cardsByStatus[status] = [];
+      }
+      cardsByStatus[status].push(card);
+    });
 
+    // Summary
     const totalCards = allCards.length;
-    const activeCards = activated.length;
-    const pendingActivation = allCards.filter(c => c.status !== "active").length;
+    const activeCards = cardsByStatus["active"]?.length || 0;
+    const pendingActivation = totalCards - activeCards;
     const salesTeams = new Set(allCards.map(c => c.salesTeam)).size;
 
-    // 2. Fetch latest 5 activities from GiftCardActivity
+    // 2. Fetch latest activities
     const { rows: activityRows } = await pool.query(`
       SELECT "cardNo", "by", "activityType", "comments", "time"
       FROM "GiftCardActivity"
@@ -71,15 +75,13 @@ export async function GET() {
       };
     });
 
-    // 3. Return full dashboard payload
+    // 3. Return structured response
     return NextResponse.json({
       totalCards,
       activeCards,
       pendingActivation,
       salesTeams,
-      activated,
-      tobeactivated,
-      inprocess,
+      cardsByStatus,
       activities,
     });
   } catch (err) {

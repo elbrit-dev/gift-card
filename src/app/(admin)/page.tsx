@@ -43,15 +43,16 @@ export default function DashboardPage() {
           Overview of card activations and sales team performance
         </div>
       </div>
+
       <DashboardSummaryCards
         totalCards={summary.totalCards}
-        activeCards={summary.activeCards}
-        pendingActivation={summary.pendingActivation}
-        salesTeams={summary.salesTeams}
+        cardsByStatus={summary.cardsByStatus}
       />
-      <ToBeActivatedCardsTable cards={summary.tobeactivated} />
-      <ActivatedCardsTable cards={summary.activated} />
-      <PendingCardsTable cards={summary.inprocess} />
+
+      <ToBeActivatedCardsTable cards={summary.cardsByStatus?.tobeactivated || []} />
+      <ActivatedCardsTable cards={summary.cardsByStatus?.active || []} />
+      <PendingCardsTable cards={summary.cardsByStatus?.underverification || []} />
+
       <RecentActivityFeed activities={summary.activities} />
     </div>
   );
