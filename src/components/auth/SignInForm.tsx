@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
+import Image from "next/image"; // ✅ import next/image
 
 export default function SignInForm() {
   const { instance, inProgress } = useMsal();
@@ -12,7 +13,6 @@ export default function SignInForm() {
     if (inProgress === InteractionStatus.None) {
       instance.loginRedirect({ scopes: ["User.Read"] });
     }
-    // else: do nothing (button will be disabled anyway)
   };
 
   return (
@@ -39,11 +39,11 @@ export default function SignInForm() {
               onClick={handleLogin}
               disabled={inProgress !== InteractionStatus.None}
             >
-              <img
+              <Image
                 src="/images/logo/microsoft.png"
                 alt="Microsoft Logo"
-                width="30"
-                height="25"
+                width={30}
+                height={25}
                 className="mr-2"
               />
               {inProgress === InteractionStatus.None

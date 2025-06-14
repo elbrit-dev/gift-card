@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import Link from "next/link"; // ✅ at the top
+
 
 interface Activity {
   activityType: string;
@@ -110,13 +112,12 @@ export default function NotificationDropdown() {
             ))
           )}
         </ul>
-
-        <a
-          href="/"
-          className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-        >
-          View All Notifications
-        </a>
+          <Link
+            href="/"
+            className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+          >
+            View All Notifications
+          </Link>
       </Dropdown>
     </div>
   );

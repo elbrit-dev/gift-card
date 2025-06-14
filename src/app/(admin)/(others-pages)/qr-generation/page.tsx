@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import * as XLSX from "xlsx";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { QRCodeCanvas } from "qrcode.react";
 
-import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import UploadExcelSection from "../../../../components/qr/UploadExcelSection";
 import ManualEntrySection from "../../../../components/qr/ManualEntrySection";
 import PendingRowsTable from "../../../../components/qr/PendingRowsTable";
@@ -65,45 +62,8 @@ export default function QRGenerationPage() {
     return `https://wa.me/919363495893?text=${encodedMsg}`;
   };
 
-  // --- 2.2. Utility: Convert QR code to base64 PNG ---
-  const generateQRBase64 = (qrString, cardNo) =>
-    new Promise((resolve) => {
-      // Make a hidden canvas, render QR
-      const canvas = document.createElement("canvas");
-      const size = 240; // larger QR for better clarity in DB
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext("2d");
-      // Use QRCodeCanvas to render
-      const temp = document.createElement("div");
-      document.body.appendChild(temp);
-      const QRComponent = (
-        <QRCodeCanvas
-          value={qrString}
-          size={size}
-          level="H"
-          includeMargin={true}
-          bgColor="#fff"
-        />
-      );
-      window.ReactDOM.render(QRComponent, temp, () => {
-        const qrCanvas = temp.querySelector("canvas");
-        if (qrCanvas) {
-          ctx.drawImage(qrCanvas, 0, 0, size, size);
-          const imgData = canvas.toDataURL("image/png");
-          window.ReactDOM.unmountComponentAtNode(temp);
-          temp.remove();
-          resolve(imgData);
-        } else {
-          temp.remove();
-          resolve(""); // fallback
-        }
-      });
-    });
-
   // --- 2.3. Utility: Save data to backend ---
   const saveToDB = async (data) => {
-    // Data: { cardNo, kit, SL, expiry, qr }
     try {
       await fetch("/api/cards", {
         method: "POST",
@@ -133,34 +93,32 @@ export default function QRGenerationPage() {
     const today = new Date().toISOString().slice(0, 10);
     const qrString = generateQRString(manualEntry);
 
-    // Always standardize expiry as YYYY-MM-DD (e.g. 2025-11-01)
+    // Always standardize expiry as YYYY-MM-DD
     let expiry = manualEntry.expiry;
     if (/^\d{4}-\d{2}$/.test(expiry)) {
       expiry = expiry + "-01";
     }
 
-    // Prepare DB payload
     const payload = {
       cardNo: manualEntry.cardNo,
       kit: manualEntry.tin,
       SL: manualEntry.serial,
-      expiry, // always YYYY-MM-DD
-      qr: qrString, // or use qrBase64 if you want the image in DB
+      expiry,
+      qr: qrString,
     };
 
-    // Call saveToDB and handle errors
     try {
       await saveToDB(payload);
     } catch (err) {
       alert("Failed to save to DB: " + (err?.message || err));
-      return; // Don't update UI if DB fails
+      return;
     }
 
     setGeneratedQRCodes((prev) => [
       ...prev,
       {
         ...manualEntry,
-        expiry, // keep consistent in table
+        expiry,
         status: "Generated",
         source: "Manual",
         generatedDate: today,
@@ -169,7 +127,6 @@ export default function QRGenerationPage() {
     ]);
     setManualEntry(initialManualState);
   };
-
 
   // --- 4. Pending table selection ---
   const handleRowSelect = (idx) => {
@@ -203,17 +160,15 @@ export default function QRGenerationPage() {
     }
 
     const newGenerated = [];
-    for (let row of selected) {
+    for (const row of selected) {
       const qrString = generateQRString(row);
-      // const qrBase64 = await generateQRBase64(qrString, row.cardNo);
 
-      // Save to DB
       await saveToDB({
         cardNo: row.cardNo,
         kit: row.tin,
         SL: row.serial,
         expiry: row.expiry,
-        qr: qrString, // or qrBase64
+        qr: qrString,
       });
 
       newGenerated.push({
@@ -268,7 +223,6 @@ export default function QRGenerationPage() {
       </p>
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
-        
         <div className="flex flex-col gap-9">
           <UploadExcelSection
             onRowsAdd={handleRowsAdd}

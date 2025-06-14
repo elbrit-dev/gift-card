@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useUser } from "@/context/UserContext";
 import { useMsal } from "@azure/msal-react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
@@ -17,7 +17,7 @@ export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useUser();
   const { instance } = useMsal();
-  const router = useRouter();
+  // const router = useRouter();
 
   function toggleDropdown(e) {
     e.stopPropagation();

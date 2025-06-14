@@ -2,14 +2,12 @@
 import React from "react";
 
 // Move these into tailwind.config.js if used in many places
-const DARK_BLUE = "bg-[#1B263B]";
 const DARK_BLUE_TEXT = "text-[#1B263B]";
 const DARK_BG = "dark:bg-[#161D29]";
 const DARK_TEXT = "dark:text-white";
 const DARK_BORDER = "dark:border-gray-700";
 const BUTTON_DARKBLUE =
   "bg-[#1B263B] hover:bg-[#122040] text-white font-semibold";
-const BUTTON_DISABLED = "bg-gray-300 text-gray-500 cursor-not-allowed";
 const INPUT_DARK =
   "dark:bg-[#212A3A] dark:text-white dark:border-gray-700 dark:placeholder:text-gray-400";
 
