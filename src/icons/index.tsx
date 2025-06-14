@@ -22,6 +22,7 @@ import DollarLineIcon from "./dollar-line.svg";
 import TrashBinIcon from "./trash.svg";
 import AngleUpIcon from "./angle-up.svg";
 import AngleDownIcon from "./angle-down.svg";
+import AngleRightIcon from "./angle-right.svg";
 import PencilIcon from "./pencil.svg";
 import CheckLineIcon from "./check-line.svg";
 import CloseLineIcon from "./close-line.svg";
@@ -79,6 +80,7 @@ export {
   TrashBinIcon,
   AngleUpIcon,
   AngleDownIcon,
+  AngleRightIcon,
   PencilIcon,
   CheckLineIcon,
   CloseLineIcon,
