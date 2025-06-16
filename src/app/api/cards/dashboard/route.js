@@ -12,7 +12,9 @@ export async function GET() {
     const { rows: allCards } = await pool.query(`
       SELECT 
         "salesTeam", 
-        "cardNo", 
+        "cardNo",
+        "kit", 
+        "SL", 
         "status", 
         "expiryDate", 
         "createdDate",

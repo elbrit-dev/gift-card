@@ -3,6 +3,8 @@ import React, { useState } from "react";
 
 interface ToBeActivatedCard {
   cardNo: string;
+  kit: string;
+  sl: string;
   salesTeam: string;
   hq: string;
   status: string;
@@ -58,6 +60,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
     const csv = [
       [
         "Gift Card No",
+        "Kit",
+        "SL",
         "Sales Team",
         "HQ",
         "Status",
@@ -70,6 +74,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
       ],
       ...selectedData.map((c) => [
         c.cardNo,
+        c.kit,
+        c.sl,
         c.salesTeam,
         c.hq,
         c.status,
@@ -115,6 +121,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
               </th>
               {[
                 "Gift Card No",
+                "Kit",
+                "SL",
                 "Sales Team",
                 "HQ",
                 "Status",
@@ -159,6 +167,12 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                   </td>
                   <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">
                     {card.cardNo || "--"}
+                  </td>
+                  <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">
+                    {card.kit || "--"}
+                  </td>
+                  <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">
+                    {card.sl || "--"}
                   </td>
                   <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
                     {card.salesTeam || "--"}

@@ -4,6 +4,8 @@ export interface Card {
   cardNo: string;
   tin: string;
   serial: string;
+  kit: string;
+  sl:string;
   expiryDate: string;
   amount: string;
   status: string;
