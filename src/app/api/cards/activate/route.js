@@ -16,7 +16,7 @@ export async function POST(req) {
     }
 
     const result = await pool.query(
-      `UPDATE "cardTable"
+      `UPDATE "GiftCardDetails"
        SET "status" = 'active'
        WHERE "cardNo" = ANY($1::text[])`,
       [cardNos]

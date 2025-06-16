@@ -7,30 +7,37 @@ import BulkActionsFooter from "@/components/card-activation/BulkActionsFooter";
 // --- Constants ---
 const PAGE_SIZE = 5;
 
-// --- Types ---
-type GiftCard = {
+// --- Type ---
+interface Card {
   cardNo: string;
   tin: string;
   serial: string;
   expiry: string;
-  amount: number;
+  amount: string;
   status: string;
   createdDate: string;
   salesTeam: string;
-};
+}
 
 // --- Main Page ---
 export default function CardActivationPage() {
-  const [cards, setCards] = useState<GiftCard[]>([]);
+  // --- States ---
+  const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Paging/filter/search
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [bulkInput, setBulkInput] = useState("");
+
+  // Selected cardNos (use a Set for quick lookup)
   const [selectedCardNos, setSelectedCardNos] = useState<Set<string>>(new Set());
+
+  // Action status
   const [isActivating, setIsActivating] = useState(false);
 
+  // --- Fetch cards from API on mount ---
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -39,7 +46,7 @@ export default function CardActivationPage() {
         if (!res.ok) throw new Error("Failed to fetch cards");
         return res.json();
       })
-      .then((data: GiftCard[]) => {
+      .then((data: Card[]) => {
         setCards(data || []);
         setLoading(false);
       })
@@ -49,6 +56,7 @@ export default function CardActivationPage() {
       });
   }, []);
 
+  // --- Filtered cards ---
   const filteredCards = useMemo(() => {
     if (!searchTerm.trim()) return cards;
     const term = searchTerm.toLowerCase();
@@ -62,12 +70,14 @@ export default function CardActivationPage() {
     );
   }, [cards, searchTerm]);
 
+  // --- Pagination ---
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
   const pagedCards = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
     return filteredCards.slice(start, start + PAGE_SIZE);
   }, [filteredCards, page]);
 
+  // --- Selection logic ---
   const handleRowSelect = (cardNoOrAll: string) => {
     if (cardNoOrAll === "all") {
       const allFilteredCardNos = filteredCards.map((c) => c.cardNo);
@@ -87,10 +97,12 @@ export default function CardActivationPage() {
     }
   };
 
+  // --- Select All Checkbox state ---
   const allSelected =
     pagedCards.length > 0 &&
     pagedCards.every((card) => selectedCardNos.has(card.cardNo));
 
+  // --- Bulk select by numbers ---
   const handleBulkSelect = () => {
     if (!bulkInput.trim()) return;
     const bulkCardNos = bulkInput
@@ -104,10 +116,14 @@ export default function CardActivationPage() {
     setBulkInput("");
   };
 
+  // --- Search trigger ---
   const handleSearch = () => setPage(1);
+
+  // --- Paging handlers ---
   const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
   const handleNextPage = () => setPage((p) => Math.min(totalPages, p + 1));
 
+  // --- Activate Selected ---
   const handleActivate = async () => {
     if (selectedCardNos.size === 0) return;
     setIsActivating(true);
@@ -132,6 +148,7 @@ export default function CardActivationPage() {
     }
   };
 
+  // --- Export Selected ---
   const handleExport = () => {
     const selected = cards.filter((c) => selectedCardNos.has(c.cardNo));
     if (selected.length === 0) return alert("No cards selected to export!");
@@ -169,6 +186,7 @@ export default function CardActivationPage() {
     URL.revokeObjectURL(url);
   };
 
+  // --- Render ---
   return (
     <div className="container mx-auto max-w-5xl py-6">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Card Activation</h2>

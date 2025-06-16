@@ -9,8 +9,10 @@ import ManualEntrySection from "../../../../components/qr/ManualEntrySection";
 import PendingRowsTable from "../../../../components/qr/PendingRowsTable";
 import GeneratedQRCodesTable from "../../../../components/qr/GeneratedQRCodesTable";
 
-// Initial state for manual entry fields
-const initialManualState = {
+import { QRRow, PendingQRRow, GeneratedQRRow } from "@/types/qr";
+
+// --- Initial Manual Entry State ---
+const initialManualState: QRRow = {
   cardNo: "",
   tin: "",
   serial: "",
@@ -18,14 +20,13 @@ const initialManualState = {
 };
 
 export default function QRGenerationPage() {
-  const [pendingRows, setPendingRows] = useState([]);
-  const [selectedRows, setSelectedRows] = useState({});
-  const [manualEntry, setManualEntry] = useState(initialManualState);
-  const [generatedQRCodes, setGeneratedQRCodes] = useState([]);
+  const [pendingRows, setPendingRows] = useState<PendingQRRow[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Record<number, boolean>>({});
+  const [manualEntry, setManualEntry] = useState<QRRow>(initialManualState);
+  const [generatedQRCodes, setGeneratedQRCodes] = useState<GeneratedQRRow[]>([]);
   const [fileName, setFileName] = useState("");
 
-  // --- 1. Add Excel rows to pending ---
-  const handleRowsAdd = (rows) => {
+  const handleRowsAdd = (rows: PendingQRRow[]) => {
     setPendingRows((prev) => {
       const existingCardNos = new Set(prev.map((row) => row.cardNo));
       const newRows = rows.filter((row) => !existingCardNos.has(row.cardNo));
@@ -36,8 +37,7 @@ export default function QRGenerationPage() {
     });
   };
 
-  // --- 2. Manual input handlers ---
-  const handleManualChange = (e) => {
+  const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setManualEntry((prev) => ({
       ...prev,
@@ -45,25 +45,23 @@ export default function QRGenerationPage() {
     }));
   };
 
-  const handleDateChange = (value) => {
+  const handleDateChange = (value: string) => {
     setManualEntry((prev) => ({
       ...prev,
       expiry: value,
     }));
   };
 
-  // --- 2.1. Utility: Generate WhatsApp QR deeplink ---
-  const generateQRString = (row) => {
+  const generateQRString = (row: QRRow): string => {
     const message = `Card Number: ${row.cardNo}
-    TIN: ${row.tin}
-    Serial: ${row.serial}
-    Expiry: ${row.expiry}`;
+TIN: ${row.tin}
+Serial: ${row.serial}
+Expiry: ${row.expiry}`;
     const encodedMsg = encodeURIComponent(message);
     return `https://wa.me/919363495893?text=${encodedMsg}`;
   };
 
-  // --- 2.3. Utility: Save data to backend ---
-  const saveToDB = async (data) => {
+  const saveToDB = async (data: any) => {
     try {
       await fetch("/api/cards", {
         method: "POST",
@@ -75,41 +73,34 @@ export default function QRGenerationPage() {
     }
   };
 
-  // --- 3. Manual Add (Generate QR & Save) ---
   const handleManualAdd = async () => {
-    if (
-      !manualEntry.cardNo ||
-      !manualEntry.tin ||
-      !manualEntry.serial ||
-      !manualEntry.expiry
-    ) {
+    const { cardNo, tin, serial, expiry } = manualEntry;
+
+    if (!cardNo || !tin || !serial || !expiry) {
       alert("All fields required");
       return;
     }
-    if (generatedQRCodes.some((row) => row.cardNo === manualEntry.cardNo)) {
+
+    if (generatedQRCodes.some((row) => row.cardNo === cardNo)) {
       alert("This card number already exists in generated QR codes!");
       return;
     }
+
     const today = new Date().toISOString().slice(0, 10);
     const qrString = generateQRString(manualEntry);
-
-    // Always standardize expiry as YYYY-MM-DD
-    let expiry = manualEntry.expiry;
-    if (/^\d{4}-\d{2}$/.test(expiry)) {
-      expiry = expiry + "-01";
-    }
+    const formattedExpiry = /^\d{4}-\d{2}$/.test(expiry) ? expiry + "-01" : expiry;
 
     const payload = {
-      cardNo: manualEntry.cardNo,
-      kit: manualEntry.tin,
-      SL: manualEntry.serial,
-      expiry,
+      cardNo,
+      kit: tin,
+      SL: serial,
+      expiry: formattedExpiry,
       qr: qrString,
     };
 
     try {
       await saveToDB(payload);
-    } catch (err) {
+    } catch (err: any) {
       alert("Failed to save to DB: " + (err?.message || err));
       return;
     }
@@ -118,7 +109,7 @@ export default function QRGenerationPage() {
       ...prev,
       {
         ...manualEntry,
-        expiry,
+        expiry: formattedExpiry,
         status: "Generated",
         source: "Manual",
         generatedDate: today,
@@ -128,16 +119,16 @@ export default function QRGenerationPage() {
     setManualEntry(initialManualState);
   };
 
-  // --- 4. Pending table selection ---
-  const handleRowSelect = (idx) => {
+  const handleRowSelect = (idx: number) => {
     setSelectedRows((prev) => ({
       ...prev,
       [idx]: !prev[idx],
     }));
   };
-  const handleSelectAll = (e) => {
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      const all = {};
+      const all: Record<number, boolean> = {};
       pendingRows.forEach((_, idx) => (all[idx] = true));
       setSelectedRows(all);
     } else {
@@ -145,11 +136,8 @@ export default function QRGenerationPage() {
     }
   };
 
-  // --- 5. Generate QR Codes from selected pending rows ---
   const handleGenerateSelectedQRCodes = async () => {
-    const now = new Date();
-    const today = now.toISOString().slice(0, 10);
-
+    const today = new Date().toISOString().slice(0, 10);
     const selected = pendingRows
       .map((row, idx) => ({ ...row, idx }))
       .filter((_, idx) => selectedRows[idx]);
@@ -159,7 +147,7 @@ export default function QRGenerationPage() {
       return;
     }
 
-    const newGenerated = [];
+    const newGenerated: GeneratedQRRow[] = [];
     for (const row of selected) {
       const qrString = generateQRString(row);
 
@@ -183,8 +171,7 @@ export default function QRGenerationPage() {
     setSelectedRows({});
   };
 
-  // --- 6. Download QR as PNG ---
-  const handleDownloadQR = (idx) => {
+  const handleDownloadQR = (idx: number) => {
     const qrBlock = document.getElementById(`qr-print-block-${idx}`);
     if (!qrBlock) return;
     html2canvas(qrBlock, { scale: 2, backgroundColor: "#fff" }).then((canvas) => {
@@ -195,8 +182,7 @@ export default function QRGenerationPage() {
     });
   };
 
-  // --- 7. Print QR as PDF ---
-  const handlePrintQR = (idx) => {
+  const handlePrintQR = (idx: number) => {
     const qrBlock = document.getElementById(`qr-print-block-${idx}`);
     if (!qrBlock) return;
     html2canvas(qrBlock, { scale: 2, backgroundColor: "#fff" }).then((canvas) => {
@@ -209,16 +195,14 @@ export default function QRGenerationPage() {
     });
   };
 
-  // --- 8. Delete QR ---
-  const handleDeleteQR = (idx) => {
+  const handleDeleteQR = (idx: number) => {
     setGeneratedQRCodes((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // ---- MAIN RENDER ----
   return (
     <>
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">QR Code Generation</h2>
-      <p className="text-gray-600 mb-6 dark:text-gray-320">
+      <p className="text-gray-600 mb-6 dark:text-gray-300">
         Upload data, generate QR and manage them effectively
       </p>
 

@@ -1,12 +1,19 @@
 "use client";
 import React from "react";
 
+interface BulkActionsFooterProps {
+  selectedCount: number;
+  onExport: () => void;
+  onActivate: () => void;
+  isActivating: boolean;
+}
+
 export default function BulkActionsFooter({
   selectedCount,
   onExport,
   onActivate,
   isActivating,
-}) {
+}: BulkActionsFooterProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-t border-gray-200 dark:border-gray-700 pt-3 mt-6 gap-3 bg-white dark:bg-[#161D29] p-3 sm:p-4 rounded-b-lg">
       <span className="text-sm text-gray-700 dark:text-gray-200">

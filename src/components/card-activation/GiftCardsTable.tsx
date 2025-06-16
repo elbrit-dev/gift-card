@@ -1,6 +1,28 @@
 "use client";
 import React from "react";
 
+// Match the Card type used in page.tsx
+interface Card {
+  cardNo: string;
+  tin: string;
+  serial: string;
+  expiry: string;
+  amount: string;
+  status: string;
+  createdDate: string;
+  salesTeam: string;
+}
+
+interface GiftCardsTableProps {
+  cards: Card[];
+  selectedCardNos: Set<string>;
+  onRowSelect: (cardNoOrAll: string) => void;
+  page: number;
+  totalPages: number;
+  onPrevPage: () => void;
+  onNextPage: () => void;
+}
+
 export default function GiftCardsTable({
   cards,
   selectedCardNos,
@@ -9,7 +31,7 @@ export default function GiftCardsTable({
   totalPages,
   onPrevPage,
   onNextPage,
-}) {
+}: GiftCardsTableProps) {
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#161D29] mt-4 overflow-hidden shadow-sm">
       <table className="w-full border-collapse text-black dark:text-white">
@@ -20,7 +42,7 @@ export default function GiftCardsTable({
                 type="checkbox"
                 checked={
                   cards.length > 0 &&
-                  cards.every(card => selectedCardNos.has(card.cardNo))
+                  cards.every((card) => selectedCardNos.has(card.cardNo))
                 }
                 onChange={() => onRowSelect("all")}
               />
@@ -31,8 +53,6 @@ export default function GiftCardsTable({
             <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">EXPIRY</th>
             <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">AMOUNT</th>
             <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">STATUS</th>
-            {/* Uncomment below only if you include createdDate in your API response */}
-            {/* <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">CREATED DATE</th> */}
             <th className="text-left px-3 py-2 font-semibold text-xs tracking-wide">SALES TEAM</th>
           </tr>
         </thead>
@@ -72,13 +92,12 @@ export default function GiftCardsTable({
                   {card.status}
                 </span>
               </td>
-              {/* Uncomment below only if you include createdDate in your API response */}
-              {/* <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.createdDate}</td> */}
               <td className="px-3 py-2">{card.salesTeam}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
       {/* Pagination */}
       <div className="flex items-center justify-end p-2 space-x-2 border-t border-gray-200 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#202838]">
         <button

@@ -1,20 +1,27 @@
 "use client";
+
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Download, Grid, Trash2 } from "lucide-react";
+import { GeneratedQRRow } from "@/types/qr"; // ✅ import the shared type
+
+interface GeneratedQRCodesTableProps {
+  generatedQRCodes: GeneratedQRRow[];
+  onDownloadQR: (idx: number) => void;
+  onPrintQR: (idx: number) => void;
+  onDeleteQR: (idx: number) => void;
+}
 
 export default function GeneratedQRCodesTable({
   generatedQRCodes,
   onDownloadQR,
   onPrintQR,
   onDeleteQR,
-}) {
+}: GeneratedQRCodesTableProps) {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-[#161D29]">
       <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">
-          Generated QR Codes
-        </h3>
+        <h3 className="font-medium text-black dark:text-white">Generated QR Codes</h3>
       </div>
       <div className="p-6.5 overflow-x-auto text-black dark:text-white">
         <table className="w-full border-collapse">
@@ -53,7 +60,6 @@ export default function GeneratedQRCodesTable({
                     includeMargin={true}
                     bgColor="#ffffff"
                   />
-                  {/* Hidden Export Block */}
                   <div
                     id={`qr-print-block-${idx}`}
                     style={{

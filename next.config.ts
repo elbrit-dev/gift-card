@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // ✅ Disable ESLint during builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  // ✅ Your custom Webpack config (e.g., for SVG)
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

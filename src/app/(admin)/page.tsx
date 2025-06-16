@@ -1,15 +1,31 @@
 "use client";
 import React, { useEffect, useState } from "react";
+
 import DashboardSummaryCards from "@/components/dashboard/DashboardSummaryCards";
 import ActivatedCardsTable from "@/components/dashboard/ActivatedCardsTable";
 import PendingCardsTable from "@/components/dashboard/PendingCardsTable";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import ToBeActivatedCardsTable from "@/components/dashboard/ToBeActivatedCardsTable";
 
+import { Card, ToBeActivatedCard, DetailedCard, Activity } from "@/types/cards";
+
+// --- DashboardSummary Type ---
+interface DashboardSummary {
+  totalCards: number;
+  activeCards: number;
+  pendingActivation: number;
+  salesTeams: string[];
+  tobeactivated: ToBeActivatedCard[];
+  activated: DetailedCard[]; // ✅ FIXED HERE
+  inprocess: DetailedCard[]; // ✅ FIXED HERE
+  activities: Activity[];
+}
+
+
 export default function DashboardPage() {
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/cards/dashboard")
@@ -35,6 +51,10 @@ export default function DashboardPage() {
     return <div className="p-10 text-center text-red-500">{error}</div>;
   }
 
+  if (!summary) {
+    return <div className="p-10 text-center text-gray-400">No data available.</div>;
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div>
@@ -46,13 +66,20 @@ export default function DashboardPage() {
 
       <DashboardSummaryCards
         totalCards={summary.totalCards}
-        cardsByStatus={summary.cardsByStatus}
+        salesTeams={summary.salesTeams.length}
+        cardsByStatus={{
+          active: summary.activated || [],
+          received: summary.tobeactivated?.filter(card => card.status === "received") || [],
+          employeescanned: summary.tobeactivated?.filter(card => card.status === "employeescanned") || [],
+          formfilled: summary.tobeactivated?.filter(card => card.status === "formfilled") || [],
+          drscanned: summary.tobeactivated?.filter(card => card.status === "drscanned") || [],
+        }}
       />
 
-      <ToBeActivatedCardsTable cards={summary.cardsByStatus?.tobeactivated || []} />
-      <ActivatedCardsTable cards={summary.cardsByStatus?.active || []} />
-      <PendingCardsTable cards={summary.cardsByStatus?.underverification || []} />
 
+      <ToBeActivatedCardsTable cards={summary.tobeactivated} />
+      <ActivatedCardsTable cards={summary.activated || []} />
+      <PendingCardsTable cards={summary.inprocess || []} />
       <RecentActivityFeed activities={summary.activities} />
     </div>
   );

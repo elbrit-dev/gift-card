@@ -20,7 +20,7 @@ export async function GET() {
         "salesTeam", 
         "status"
       FROM "GiftCardDetails"
-      WHERE "status" = 'tobeactivated'
+      WHERE "status" = 'drscanned'
       ORDER BY "createdDate" DESC
     `;
     const { rows } = await pool.query(query);
@@ -53,7 +53,7 @@ export async function POST(req) {
         "createdDate" = CURRENT_DATE
       RETURNING *;
     `;
-    const values = [cardNo, kit, SL, expiry, qr, "tobeactivated"];
+    const values = [cardNo, kit, SL, expiry, qr, "drscanned"];
     const result = await pool.query(query, values);
 
     return NextResponse.json({ success: true, card: result.rows[0] });

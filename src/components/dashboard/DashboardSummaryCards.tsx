@@ -2,17 +2,23 @@
 import React from "react";
 import {
   CreditCard,
-  Briefcase,
   CheckCircle,
   Clock,
   FileClock,
   AlertCircle,
 } from "lucide-react";
 
+interface GiftCard {
+  cardNo: string;
+  status: string;
+  createdDate?: string;
+  [key: string]: any;
+}
+
 interface DashboardSummaryCardsProps {
   totalCards: number;
   salesTeams: number;
-  cardsByStatus?: Record<string, any[]>;
+  cardsByStatus?: Record<string, GiftCard[]>;
 }
 
 const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({
@@ -29,17 +35,29 @@ const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({
       icon: <CreditCard size={28} className="text-blue-600" />,
       border: "border-blue-100",
     },
-    // {
-    //   label: "Sales Teams",
-    //   value: salesTeams,
-    //   icon: <Briefcase size={28} className="text-indigo-500" />,
-    //   border: "border-indigo-100",
-    // },
     {
-      label: "To Be Filled",
-      value: getCount("tobefilled"),
+      label: "To be scanned",
+      value: getCount("received"),
+      icon: <CreditCard size={28} className="text-blue-500" />,
+      border: "border-blue-200",
+    },
+    {
+      label: "Step-1: Employee scan",
+      value: getCount("employeescanned"),
       icon: <FileClock size={28} className="text-gray-500" />,
       border: "border-gray-100",
+    },
+    {
+      label: "Form filled, Doctor Scan Pending",
+      value: getCount("formfilled"),
+      icon: <Clock size={28} className="text-yellow-600" />,
+      border: "border-yellow-100",
+    },
+    {
+      label: "Step-2: Doctor Scanned",
+      value: getCount("drscanned"),
+      icon: <AlertCircle size={28} className="text-orange-500" />,
+      border: "border-orange-200",
     },
     {
       label: "Active",
@@ -48,22 +66,10 @@ const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({
       border: "border-green-100",
     },
     {
-      label: "To Be Activated",
-      value: getCount("tobeactivated"),
-      icon: <Clock size={28} className="text-yellow-600" />,
-      border: "border-yellow-100",
-    },
-    {
-      label: "Received",
-      value: getCount("received"),
-      icon: <CreditCard size={28} className="text-blue-500" />,
-      border: "border-blue-200",
-    },
-    {
-      label: "Under Verification",
-      value: getCount("underverification"),
-      icon: <AlertCircle size={28} className="text-orange-500" />,
-      border: "border-orange-200",
+      label: "Sales Teams",
+      value: salesTeams,
+      icon: <CreditCard size={28} className="text-indigo-600" />,
+      border: "border-indigo-100",
     },
   ];
 

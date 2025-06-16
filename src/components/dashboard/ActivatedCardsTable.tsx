@@ -1,20 +1,9 @@
 "use client";
 import React, { useState } from "react";
-
-interface ActivatedCard {
-  cardNo: string;
-  salesTeam: string;
-  hq: string;
-  status: string;
-  drName: string;
-  drPhoneNumber: string;
-  empName: string;
-  empPhone: string;
-  expiryDate: string;
-}
+import { DetailedCard } from "@/types/cards"; // ✅ Shared centralized type
 
 interface ActivatedCardsTableProps {
-  cards: ActivatedCard[];
+  cards: DetailedCard[];
   pageSize?: number;
 }
 
@@ -22,10 +11,12 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
-  const formattedCards = cards.map(card => ({
-    ...card,
-    expiry: card.expiryDate || "--",
-  }));
+  const formattedCards = cards
+    .filter(card => card.status === "active")
+    .map(card => ({
+      ...card,
+      expiry: card.expiryDate || "--",
+    }));
 
   const totalPages = Math.ceil(formattedCards.length / pageSize);
   const pagedCards = formattedCards.slice((page - 1) * pageSize, page * pageSize);
@@ -34,17 +25,19 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
   const allSelected = allCardNos.length > 0 && allCardNos.every(id => selectedCards.includes(id));
 
   const toggleSelectAll = () => {
-    if (allSelected) {
-      setSelectedCards([]);
-    } else {
-      setSelectedCards(allCardNos);
-    }
+    setSelectedCards(allSelected ? [] : allCardNos);
   };
 
   const toggleSelect = (cardNo: string) => {
     setSelectedCards(prev =>
       prev.includes(cardNo) ? prev.filter(id => id !== cardNo) : [...prev, cardNo]
     );
+  };
+
+  const escapeCSV = (value: string) => {
+    if (!value) return "";
+    const escaped = value.replace(/"/g, '""');
+    return `"${escaped}"`;
   };
 
   const downloadSelectedAsCSV = () => {
@@ -54,7 +47,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
       ...selectedData.map(c => [
         c.cardNo, c.salesTeam, c.hq, c.status, c.drName, c.drPhoneNumber,
         c.empName, c.empPhone, c.expiry
-      ])
+      ].map(escapeCSV))
     ]
       .map(row => row.join(","))
       .join("\n");
@@ -73,7 +66,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
       <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
         Activated Gift Cards
         <button
-          className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+          className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
           onClick={downloadSelectedAsCSV}
           disabled={selectedCards.length === 0}
         >
@@ -91,7 +84,10 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
                 "Gift Card No", "Sales Team", "HQ", "Status",
                 "Dr Name", "Dr Phone", "Emp Name", "Emp Phone", "Expiry"
               ].map((title, idx) => (
-                <th key={idx} className="px-3 py-2 font-semibold text-left text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                <th
+                  key={idx}
+                  className="px-3 py-2 font-semibold text-left text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700"
+                >
                   {title}
                 </th>
               ))}

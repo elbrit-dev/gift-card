@@ -11,6 +11,19 @@ const BUTTON_DARKBLUE =
 const INPUT_DARK =
   "dark:bg-[#212A3A] dark:text-white dark:border-gray-700 dark:placeholder:text-gray-400";
 
+// --- Props Interface ---
+interface BulkControlsSectionProps {
+  allSelected: boolean;
+  selectedCount: number;
+  onSelectAll: () => void;
+  bulkInput: string;
+  setBulkInput: (value: string) => void;
+  onBulkSelect: () => void;
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  onSearch: () => void;
+}
+
 export default function BulkControlsSection({
   allSelected,
   selectedCount,
@@ -21,7 +34,7 @@ export default function BulkControlsSection({
   searchTerm,
   setSearchTerm,
   onSearch,
-}) {
+}: BulkControlsSectionProps) {
   return (
     <div className={`bg-white border border-gray-200 rounded-lg p-4 sm:p-6 mb-5 shadow-sm ${DARK_BG} ${DARK_BORDER}`}>
       {/* Top Row: Select All & Search */}
@@ -43,7 +56,7 @@ export default function BulkControlsSection({
           <input
             type="text"
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search gift cards..."
             className={`border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-[#1B263B] w-full sm:w-64 md:w-80 bg-white ${INPUT_DARK}`}
           />
@@ -52,22 +65,20 @@ export default function BulkControlsSection({
             onClick={onSearch}
             type="button"
           >
-            &#128269; Filter
+            🔍 Filter
           </button>
         </div>
       </div>
       {/* Second Row: Bulk Select */}
       <div className="flex flex-col md:flex-row md:items-start gap-3">
-        <label
-          className={`text-sm font-medium mt-2 md:mt-0 ${DARK_BLUE_TEXT} ${DARK_TEXT}`}
-        >
+        <label className={`text-sm font-medium mt-2 md:mt-0 ${DARK_BLUE_TEXT} ${DARK_TEXT}`}>
           Bulk Select by Gift Card Numbers:
         </label>
         <div className="flex-1 flex flex-col">
           <input
             type="text"
             value={bulkInput}
-            onChange={e => setBulkInput(e.target.value)}
+            onChange={(e) => setBulkInput(e.target.value)}
             placeholder="Enter card numbers separated by commas"
             className={`border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-[#1B263B] bg-white w-full ${INPUT_DARK}`}
           />
@@ -81,7 +92,7 @@ export default function BulkControlsSection({
           onClick={onBulkSelect}
           type="button"
         >
-          &#10003; Select
+          ✔ Select
         </button>
       </div>
     </div>

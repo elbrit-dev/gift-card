@@ -1,7 +1,17 @@
 "use client";
+
 import React from "react";
 import Button from "../ui/button/Button";
 import { Grid } from "lucide-react";
+import { PendingQRRow } from "@/types/qr"; // ✅ Use shared type
+
+interface PendingRowsTableProps {
+  pendingRows: PendingQRRow[];
+  selectedRows: Record<number, boolean>;
+  onSelect: (idx: number) => void;
+  onSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onGenerate: () => void;
+}
 
 export default function PendingRowsTable({
   pendingRows,
@@ -9,7 +19,7 @@ export default function PendingRowsTable({
   onSelect,
   onSelectAll,
   onGenerate,
-}) {
+}: PendingRowsTableProps) {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-gray-900">
       <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark flex justify-between items-center">
