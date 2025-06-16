@@ -203,8 +203,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
 
       {/* Modal Popup for QR */}
       {modalQR && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-          <div className="bg-white p-5 rounded-lg relative shadow-xl max-w-sm w-full">
+        <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
+          <div className="bg-transparent p-5 rounded-lg relative shadow-xl max-w-sm w-full">
             <button
               className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl"
               onClick={() => setModalQR(null)}

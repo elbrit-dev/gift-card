@@ -16,10 +16,10 @@ export default function ResetCardForm() {
     setMessage("");
 
     try {
-      const res = await fetch("/api/cards/reset", {
+      const res = await fetch("/api/cards/activate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardNo }),
+        body: JSON.stringify({ mode: "reset", cardNos: [cardNo] }),
       });
 
       const result = await res.json();
