@@ -23,7 +23,7 @@ interface InProgressCardsTableProps {
 const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, pageSize = 5 }) => {
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [modalQR, setModalQR] = useState<string | null>(null); // 👈 for modal
+  const [modalQR, setModalQR] = useState<string | null>(null);
 
   const formattedCards = cards
     .filter(card => card.status !== "active" && card.status !== "drscanned")
@@ -100,11 +100,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
                 <th className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
                   <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                 </th>
-                {[
-                  "Gift Card No", "Sales Team", "HQ", "Status",
-                  "Doctor Name", "Doctor Phone", "Employee Name",
-                  "Employee Designation", "Employee Phone", "Expiry", "QR Code"
-                ].map((title, idx) => (
+                {["Gift Card No", "Sales Team", "HQ", "Status", "Doctor Name", "Doctor Phone", "Employee Name", "Employee Designation", "Employee Phone", "Expiry", "QR Code"].map((title, idx) => (
                   <th
                     key={idx}
                     className="px-3 py-2 font-semibold text-left text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700"
@@ -148,7 +144,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
                     <td className="px-3 py-2 border dark:border-gray-700">
                       {card.qr ? (
                         <img
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(card.qr)}`}
+                          src={card.qr}
                           alt="QR"
                           className="h-12 w-12 object-contain cursor-pointer"
                           onClick={() => setModalQR(card.qr)}
@@ -186,20 +182,33 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
         )}
       </div>
 
-      {/* Modal */}
       {modalQR && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full relative">
+        <div
+          className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto"
+          onClick={() => setModalQR(null)}
+        >
+          <div
+            className="bg-white p-5 rounded-lg relative shadow-xl max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
-              className="absolute top-1 right-2 text-gray-600 hover:text-black text-xl font-bold"
+              className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl"
               onClick={() => setModalQR(null)}
             >
               ×
             </button>
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(modalQR)}`}
-              alt="Full QR"
-              className="w-full object-contain"
+              src={modalQR}
+              width={200}
+              alt="QR Enlarged"
+              className="object-contain mb-4"
+            />
+            <p className="text-sm font-semibold text-gray-700 mb-1">WhatsApp Message Link:</p>
+            <input
+              type="text"
+              value={new URL(modalQR).searchParams.get("data") || ""}
+              readOnly
+              className="w-full text-xs p-2 rounded border border-gray-300 bg-gray-50 font-mono text-gray-700"
             />
           </div>
         </div>

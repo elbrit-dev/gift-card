@@ -21,6 +21,7 @@ export interface ToBeActivatedCard extends Card {
   empName: string;
   designation: string;
   verifyName: string;
+  verifyScore: string;
   empPhone: string;
 }
 
