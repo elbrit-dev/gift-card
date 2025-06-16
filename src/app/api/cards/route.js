@@ -12,13 +12,22 @@ export async function GET() {
   try {
     const query = `
       SELECT 
-        "cardNo", 
-        "SL" AS serial, 
-        "kit" AS tin, 
-        "expiryDate" AS expiry, 
-        "amount", 
         "salesTeam", 
-        "status"
+        "cardNo",
+        "kit", 
+        "SL", 
+        "status", 
+        "expiryDate", 
+        "createdDate",
+        "employeeCode",
+        "drCode",
+        "empName",
+        "verifyName",
+        "drName",
+        "hq",
+        "designation",
+        "empPhone",
+        "drPhoneNumber"
       FROM "GiftCardDetails"
       WHERE "status" = 'drscanned'
       ORDER BY "createdDate" DESC

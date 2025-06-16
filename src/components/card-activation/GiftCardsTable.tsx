@@ -1,16 +1,23 @@
 "use client";
 import React from "react";
 
-// Match the Card type used in page.tsx
 interface Card {
   cardNo: string;
-  tin: string;
-  serial: string;
-  expiry: string;
-  amount: string;
-  status: string;
-  createdDate: string;
+  kit: string;
+  sl: string;
   salesTeam: string;
+  hq: string;
+  status: string;
+  drName: string;
+  drPhoneNumber: string;
+  verifyName: string;
+  empName: string;
+  designation: string;
+  empPhone: string;
+  expiryDate: string;
+  expiry?: string;
+  amount: string;
+  createdDate: string;
 }
 
 interface GiftCardsTableProps {
@@ -32,89 +39,99 @@ export default function GiftCardsTable({
   onPrevPage,
   onNextPage,
 }: GiftCardsTableProps) {
+  const allSelected = cards.length > 0 && cards.every(card => selectedCardNos.has(card.cardNo));
+
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#161D29] mt-4 overflow-hidden shadow-sm">
-      <table className="w-full border-collapse text-black dark:text-white">
-        <thead>
-          <tr className="bg-[#f9fafb] dark:bg-[#202838] border-t border-b border-gray-200 dark:border-gray-700">
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">
-              <input
-                type="checkbox"
-                checked={
-                  cards.length > 0 &&
-                  cards.every((card) => selectedCardNos.has(card.cardNo))
-                }
-                onChange={() => onRowSelect("all")}
-              />
-            </th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">GIFT CARD NUMBER</th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">TIN</th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">SERIAL</th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">EXPIRY</th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">AMOUNT</th>
-            <th className="text-left px-3 py-2 border-r border-gray-200 dark:border-gray-700 font-semibold text-xs tracking-wide">STATUS</th>
-            <th className="text-left px-3 py-2 font-semibold text-xs tracking-wide">SALES TEAM</th>
+    <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
+      <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
+        <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1f2937] border-b border-gray-300 dark:border-gray-600 text-xs uppercase font-semibold tracking-wide">
+          <tr>
+            <th className="px-3 py-3"><input type="checkbox" checked={allSelected} onChange={() => onRowSelect("all")} /></th>
+            <th className="px-3 py-3">Card No</th>
+            <th className="px-3 py-3">KIT</th>
+            <th className="px-3 py-3">Serial</th>
+            <th className="px-3 py-3">Expiry</th>
+            <th className="px-3 py-3">Amount</th>
+            <th className="px-3 py-3">Status</th>
+            <th className="px-3 py-3">HQ</th>
+            <th className="px-3 py-3">Sales Team</th>
+            <th className="px-3 py-3">Dr Name</th>
+            <th className="px-3 py-3">Dr Phone</th>
+            <th className="px-3 py-3">Verify Name</th>
+            <th className="px-3 py-3">Emp Name</th>
+            <th className="px-3 py-3">Emp Phone</th>
+            <th className="px-3 py-3">Created Date</th>
           </tr>
         </thead>
         <tbody>
-          {cards.length === 0 && (
+          {cards.length === 0 ? (
             <tr>
-              <td colSpan={8} className="text-center py-5 text-gray-400 dark:text-gray-500 border-b border-gray-200 dark:border-gray-700">
+              <td colSpan={15} className="py-6 text-center text-gray-400 dark:text-gray-500">
                 No cards found
               </td>
             </tr>
+          ) : (
+            cards.map((card, index) => (
+              <tr
+                key={card.cardNo}
+                className={`transition-all ${
+                  index % 2 === 0 ? "bg-white dark:bg-[#1a1d25]" : "bg-gray-50 dark:bg-[#212836]"
+                } hover:bg-gray-100 dark:hover:bg-[#2b3545]`}
+              >
+                <td className="px-3 py-3">
+                  <input type="checkbox" checked={selectedCardNos.has(card.cardNo)} onChange={() => onRowSelect(card.cardNo)} />
+                </td>
+                <td className="px-3 py-3">{card.cardNo}</td>
+                <td className="px-3 py-3">{card.kit}</td>
+                <td className="px-3 py-3">{card.sl}</td>
+                <td className="px-3 py-3">{card.expiry || card.expiryDate}</td>
+                <td className="px-3 py-3">{card.amount}</td>
+                <td className="px-3 py-3">
+                  <span
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                      card.status.toLowerCase() === "active"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                    }`}
+                  >
+                    {card.status}
+                  </span>
+                </td>
+                <td className="px-3 py-3">{card.hq}</td>
+                <td className="px-3 py-3">{card.salesTeam}</td>
+                <td className="px-3 py-3">{card.drName}</td>
+                <td className="px-3 py-3">{card.drPhoneNumber}</td>
+                <td className="px-3 py-3">{card.verifyName}</td>
+                <td className="px-3 py-3">{card.empName}</td>
+                <td className="px-3 py-3">{card.empPhone}</td>
+                <td className="px-3 py-3">{card.createdDate}</td>
+              </tr>
+            ))
           )}
-          {cards.map((card) => (
-            <tr
-              key={card.cardNo}
-              className={`hover:bg-gray-50 dark:hover:bg-[#232e42] border-b border-gray-200 dark:border-gray-700 transition`}
-            >
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">
-                <input
-                  type="checkbox"
-                  checked={selectedCardNos.has(card.cardNo)}
-                  onChange={() => onRowSelect(card.cardNo)}
-                />
-              </td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.cardNo}</td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.tin}</td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.serial}</td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.expiry}</td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">{card.amount}</td>
-              <td className="px-3 py-2 border-r border-gray-200 dark:border-gray-700">
-                <span
-                  className={`inline-block px-2 py-1 rounded text-xs ${
-                    card.status === "Active"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                      : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-                  }`}
-                >
-                  {card.status}
-                </span>
-              </td>
-              <td className="px-3 py-2">{card.salesTeam}</td>
-            </tr>
-          ))}
         </tbody>
       </table>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end p-2 space-x-2 border-t border-gray-200 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#202838]">
-        <button
-          disabled={page === 1}
-          onClick={onPrevPage}
-          className="px-2 py-1 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-[#212A3A] text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-[#232e42] transition disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span className="text-xs font-medium text-gray-800 dark:text-gray-100">{page}</span>
-        <button
-          disabled={page === totalPages}
-          onClick={onNextPage}
-          className="px-2 py-1 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-[#212A3A] text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-[#232e42] transition disabled:opacity-50"
-        >
-          Next
-        </button>
+      <div className="flex justify-between items-center px-4 py-3 bg-gray-50 dark:bg-[#1f2937] border-t border-gray-200 dark:border-gray-700 text-sm">
+        <div className="text-gray-600 dark:text-gray-400">
+          Page <strong>{page}</strong> of <strong>{totalPages}</strong>
+        </div>
+        <div className="space-x-2">
+          <button
+            onClick={onPrevPage}
+            disabled={page === 1}
+            className="px-3 py-1 rounded border text-sm font-medium bg-white dark:bg-[#2a3340] border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-[#2f3c4f] disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={onNextPage}
+            disabled={page === totalPages}
+            className="px-3 py-1 rounded border text-sm font-medium bg-white dark:bg-[#2a3340] border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-[#2f3c4f] disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

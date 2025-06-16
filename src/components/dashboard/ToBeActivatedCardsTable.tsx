@@ -10,6 +10,7 @@ interface ToBeActivatedCard {
   status: string;
   drName: string;
   drPhoneNumber: string;
+  verifyName: string;
   empName: string;
   designation: string;
   empPhone: string;
@@ -67,6 +68,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
         "Status",
         "Dr Name",
         "Dr Phone",
+        "Verify Name",
         "Emp Name",
         "Emp Designation",
         "Emp Phone",
@@ -81,6 +83,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
         c.status,
         c.drName,
         c.drPhoneNumber,
+        c.verifyName,
         c.empName,
         c.designation,
         c.empPhone,
@@ -190,6 +193,9 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                   </td>
                   <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
                     {card.drPhoneNumber || "--"}
+                  </td>
+                  <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                    {card.verifyName || "--"}
                   </td>
                   <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">
                     {card.empName || "--"}

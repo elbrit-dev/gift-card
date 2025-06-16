@@ -10,13 +10,21 @@ const PAGE_SIZE = 5;
 // --- Type ---
 interface Card {
   cardNo: string;
-  tin: string;
-  serial: string;
-  expiry: string;
-  amount: string;
-  status: string;
-  createdDate: string;
+  kit: string;
+  sl: string;
   salesTeam: string;
+  hq: string;
+  status: string;
+  drName: string;
+  drPhoneNumber: string;
+  verifyName: string;
+  empName: string;
+  designation: string;
+  empPhone: string;
+  expiryDate: string;
+  expiry?: string;
+  amount: string;
+  createdDate: string;
 }
 
 // --- Main Page ---
@@ -63,8 +71,8 @@ export default function CardActivationPage() {
     return cards.filter(
       (c) =>
         c.cardNo?.toLowerCase().includes(term) ||
-        c.tin?.toLowerCase().includes(term) ||
-        c.serial?.toLowerCase().includes(term) ||
+        c.kit?.toLowerCase().includes(term) ||
+        c.sl?.toLowerCase().includes(term) ||
         c.salesTeam?.toLowerCase().includes(term) ||
         c.status?.toLowerCase().includes(term)
     );
@@ -155,22 +163,36 @@ export default function CardActivationPage() {
     const csv = [
       [
         "Card Number",
-        "TIN",
+        "KIT",
         "Serial",
         "Expiry",
         "Amount",
         "Status",
+        "HQ",
+        "Dr Name",
+        "Dr Phone",
+        "Verify Name",
+        "Emp Name",
+        "Emp Designation",
+        "Emp Phone",
         "Created Date",
         "Sales Team",
       ].join(","),
       ...selected.map((c) =>
         [
           c.cardNo,
-          c.tin,
-          c.serial,
+          c.kit,
+          c.sl,
           c.expiry,
           c.amount,
           c.status,
+          c.hq,
+          c.drName,
+          c.drPhoneNumber,
+          c.verifyName,
+          c.empName,
+          c.designation,
+          c.empPhone,
           c.createdDate,
           c.salesTeam,
         ].join(",")
