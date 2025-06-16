@@ -159,12 +159,12 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
                       {card.qr ? (
                         <img
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(card.qr)}`}
+                          src={card.qr} // ✅ Use card.qr for thumbnail
                           alt="QR"
                           className="h-12 w-12 object-contain cursor-pointer"
                           onClick={(e) => {
-                            e.preventDefault();
-                            setModalQR(card.qr || "");
+                            e.preventDefault(); // Prevent any accidental navigation
+                            setModalQR(card.qr || ""); // ✅ Set modal content from current card
                           }}
                         />
                       ) : (
@@ -203,8 +203,14 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
 
       {/* Modal Popup for QR */}
       {modalQR && (
-        <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
-          <div className="bg-transparent p-5 rounded-lg relative shadow-xl max-w-sm w-full">
+        <div
+          className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto"
+          onClick={() => setModalQR(null)}
+        >
+          <div
+            className="bg-transparent p-5 rounded-lg relative shadow-xl max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl"
               onClick={() => setModalQR(null)}
@@ -212,13 +218,15 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
               ×
             </button>
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(modalQR)}`}
+              src={modalQR}
+              width={200} // ✅ Set fixed width
               alt="QR Enlarged"
-              className="w-full object-contain"
+              className="object-contain" // ✅ Removed w-full
             />
           </div>
         </div>
       )}
+
     </>
   );
 };
