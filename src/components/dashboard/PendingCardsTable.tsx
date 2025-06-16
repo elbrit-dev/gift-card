@@ -146,7 +146,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
                   <td className="px-3 py-2 border dark:border-gray-700">
                     {card.qr ? (
                       <img
-                        src={`data:image/png;base64,${card.qr}`}
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(card.qr)}`}
                         alt="QR"
                         className="h-12 w-12 object-contain"
                       />

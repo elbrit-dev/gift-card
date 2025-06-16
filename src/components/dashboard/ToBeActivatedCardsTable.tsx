@@ -19,9 +19,9 @@ interface ToBeActivatedCard {
 }
 
 interface ToBeActivatedCardsTableProps {
-  cards?: ToBeActivatedCard[];  // Can pass received, formfilled, etc.
+  cards?: ToBeActivatedCard[];
   pageSize?: number;
-  title?: string;               // Optional title override
+  title?: string;
 }
 
 const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
@@ -41,8 +41,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
   const pagedCards = formattedCards.slice((page - 1) * pageSize, page * pageSize);
 
   const allCardNos = formattedCards.map((card) => card.cardNo);
-  const allSelected =
-    allCardNos.length > 0 && allCardNos.every((id) => selectedCards.includes(id));
+  const allSelected = allCardNos.length > 0 && allCardNos.every((id) => selectedCards.includes(id));
 
   const toggleSelectAll = () => {
     setSelectedCards(allSelected ? [] : allCardNos);
@@ -55,9 +54,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
   };
 
   const downloadSelectedAsCSV = () => {
-    const selectedData = formattedCards.filter((card) =>
-      selectedCards.includes(card.cardNo)
-    );
+    const selectedData = formattedCards.filter((card) => selectedCards.includes(card.cardNo));
     const csv = [
       [
         "Gift Card No",
@@ -131,7 +128,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                 "Status",
                 "Dr Name",
                 "Dr Phone",
-                "Verify Name",
+                "Verify Name", // ✅ FIXED here
                 "Emp Name",
                 "Emp Designation",
                 "Emp Phone",
@@ -150,7 +147,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
             {pagedCards.length === 0 ? (
               <tr>
                 <td
-                  colSpan={11}
+                  colSpan={14}
                   className="text-center py-6 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700"
                 >
                   No cards to show

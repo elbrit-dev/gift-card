@@ -24,6 +24,7 @@ export async function GET() {
         "drName",
         "hq",
         "qr",
+        "verifyName",
         "designation",
         "empPhone",
         "drPhoneNumber"
