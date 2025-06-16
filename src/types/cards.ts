@@ -12,6 +12,7 @@ export interface Card {
   salesTeam: string;
   createdDate: string;
   hq: string;
+  qr: string;
 }
 
 export interface ToBeActivatedCard extends Card {

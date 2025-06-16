@@ -131,6 +131,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                 "Status",
                 "Dr Name",
                 "Dr Phone",
+                "Verify Name",
                 "Emp Name",
                 "Emp Designation",
                 "Emp Phone",

@@ -12,6 +12,7 @@ interface InProgressCard {
   empPhone: string;
   expiryDate: string;
   designation: string;
+  qr: string; // base64 QR code string
 }
 
 interface InProgressCardsTableProps {
@@ -58,12 +59,12 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
       [
         "Gift Card No", "Sales Team", "HQ", "Status",
         "Doctor Name", "Doctor Phone", "Employee Name",
-        "Employee Designation", "Employee Phone", "Expiry"
+        "Employee Designation", "Employee Phone", "Expiry", "QRCODE"
       ],
       ...selectedData.map(c => [
         c.cardNo, c.salesTeam, c.hq, c.status,
         c.drName, c.drPhoneNumber, c.empName,
-        c.designation, c.empPhone, c.expiry
+        c.designation, c.empPhone, c.expiry, c.qr
       ].map(escapeCSV))
     ]
       .map(row => row.join(","))
@@ -91,7 +92,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
         </button>
       </div>
       <div className="w-full overflow-x-auto">
-        <table className="min-w-[1200px] w-full text-sm md:text-base border-collapse border border-gray-200 dark:border-gray-700">
+        <table className="min-w-[1300px] w-full text-sm md:text-base border-collapse border border-gray-200 dark:border-gray-700">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800">
               <th className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
@@ -100,7 +101,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
               {[
                 "Gift Card No", "Sales Team", "HQ", "Status",
                 "Doctor Name", "Doctor Phone", "Employee Name",
-                "Employee Designation", "Employee Phone", "Expiry"
+                "Employee Designation", "Employee Phone", "Expiry", "QR Code"
               ].map((title, idx) => (
                 <th
                   key={idx}
@@ -114,7 +115,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
           <tbody>
             {pagedCards.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700">
+                <td colSpan={12} className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700">
                   No cards in progress
                 </td>
               </tr>
@@ -142,6 +143,17 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
                   <td className="px-3 py-2 border dark:border-gray-700">{card.designation}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.empPhone}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.expiry}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">
+                    {card.qr ? (
+                      <img
+                        src={`data:image/png;base64,${card.qr}`}
+                        alt="QR"
+                        className="h-12 w-12 object-contain"
+                      />
+                    ) : (
+                      <span className="text-gray-400">N/A</span>
+                    )}
+                  </td>
                 </tr>
               ))
             )}

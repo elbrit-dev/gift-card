@@ -23,6 +23,7 @@ export async function GET() {
         "empName",
         "drName",
         "hq",
+        "qr",
         "designation",
         "empPhone",
         "drPhoneNumber"
