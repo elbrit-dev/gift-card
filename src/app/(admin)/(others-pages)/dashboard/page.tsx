@@ -8,18 +8,20 @@ import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import ToBeActivatedCardsTable from "@/components/dashboard/ToBeActivatedCardsTable";
 
 import { Card, ToBeActivatedCard, DetailedCard, Activity } from "@/types/cards";
+import { DashboardSummary } from "@/types/cards";
+
 
 // --- DashboardSummary Type ---
-interface DashboardSummary {
-  totalCards: number;
-  activeCards: number;
-  pendingActivation: number;
-  salesTeams: string[];
-  tobeactivated: ToBeActivatedCard[];
-  activated: DetailedCard[]; // ✅ FIXED HERE
-  inprocess: DetailedCard[]; // ✅ FIXED HERE
-  activities: Activity[];
-}
+// interface DashboardSummary {
+//   totalCards: number;
+//   activeCards: number;
+//   pendingActivation: number;
+//   salesTeams: string[];
+//   tobeactivated: ToBeActivatedCard[];
+//   activated: DetailedCard[]; // ✅ FIXED HERE
+//   inprocess: DetailedCard[]; // ✅ FIXED HERE
+//   activities: Activity[];
+// }
 
 
 export default function DashboardPage() {
@@ -68,15 +70,16 @@ export default function DashboardPage() {
         totalCards={summary.totalCards}
         salesTeams={summary.salesTeams.length}
         cardsByStatus={{
-          active: summary.activated || [],
-          received: summary.tobeactivated?.filter(card => card.status === "received") || [],
-          employeescanned: summary.tobeactivated?.filter(card => card.status === "employeescanned") || [],
-          formfilled: summary.tobeactivated?.filter(card => card.status === "formfilled") || [],
-          drscanned: summary.tobeactivated?.filter(card => card.status === "drscanned") || [],
+          active: summary.activated,
+          received: summary.received,
+          employeescanned: summary.employeescanned,
+          formfilled: summary.formfilled,
+          drscanned: summary.drscanned,
         }}
       />
 
-      <ToBeActivatedCardsTable cards={summary.tobeactivated} />
+
+      <ToBeActivatedCardsTable cards={summary.drscanned} />
       <ActivatedCardsTable cards={summary.activated || []} />
       <PendingCardsTable cards={summary.inprocess} />
       <RecentActivityFeed activities={summary.activities} />

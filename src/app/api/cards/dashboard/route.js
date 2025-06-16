@@ -82,10 +82,17 @@ export async function GET() {
       totalCards,
       activeCards,
       pendingActivation,
-      salesTeams,
-      cardsByStatus,
+      salesTeams: Array.from(new Set(allCards.map(c => c.salesTeam))),
+      // Grouping by normalized status keys
+      activated: cardsByStatus["active"] || [],
+      received: cardsByStatus["received"] || [],
+      employeescanned: cardsByStatus["employeescanned"] || [],
+      formfilled: cardsByStatus["formfilled"] || [],
+      drscanned: cardsByStatus["drscanned"] || [],
+      inprocess: cardsByStatus["inprocess"] || [],
       activities,
     });
+
   } catch (err) {
     console.error('[API][dashboard][ERROR]', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

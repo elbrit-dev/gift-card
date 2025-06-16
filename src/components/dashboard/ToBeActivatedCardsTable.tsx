@@ -12,27 +12,27 @@ interface ToBeActivatedCard {
   designation: string;
   empPhone: string;
   expiryDate: string;
-  expiry?: string; // Added to avoid TS error when using derived value
+  expiry?: string;
 }
 
 interface ToBeActivatedCardsTableProps {
-  cards?: ToBeActivatedCard[]; // Optional fallback
+  cards?: ToBeActivatedCard[];  // Can pass received, formfilled, etc.
   pageSize?: number;
+  title?: string;               // Optional title override
 }
 
 const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
   cards = [],
   pageSize = 5,
+  title = "Cards To Be Activated",
 }) => {
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
-  const formattedCards = cards
-    .filter((card) => card.status === "drscanned")
-    .map((card) => ({
-      ...card,
-      expiry: card.expiryDate || "--",
-    }));
+  const formattedCards = cards.map((card) => ({
+    ...card,
+    expiry: card.expiryDate || "--",
+  }));
 
   const totalPages = Math.ceil(formattedCards.length / pageSize);
   const pagedCards = formattedCards.slice((page - 1) * pageSize, page * pageSize);
@@ -96,7 +96,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto shadow-sm">
       <div className="flex justify-between items-center px-5 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
-        Under Verification Cards To Be Activated
+        {title}
         <button
           className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
           onClick={downloadSelectedAsCSV}
@@ -141,7 +141,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                   colSpan={11}
                   className="text-center py-6 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700"
                 >
-                  No cards to be activated
+                  No cards to show
                 </td>
               </tr>
             ) : (

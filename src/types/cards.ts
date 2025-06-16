@@ -30,3 +30,17 @@ export interface Activity {
   message: string;
 }
 
+export interface DashboardSummary {
+  totalCards: number;
+  activeCards: number;
+  pendingActivation: number;
+  salesTeams: string[];
+  activated: DetailedCard[];
+  received: DetailedCard[];
+  employeescanned: DetailedCard[];
+  formfilled: DetailedCard[];
+  drscanned: DetailedCard[];
+  inprocess: DetailedCard[];
+  activities: Activity[];
+}
+
