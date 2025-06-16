@@ -44,7 +44,7 @@ export async function POST(req) {
            "salesTeam" = NULL,
            "createdDate" = NULL,
            "amount" = NULL,
-           "Qr" = NULL,
+           "qr" = NULL,
            "drCheckIn" = FALSE,
            "status" = 'received'
          WHERE "cardNo" = ANY($1::text[])`,
