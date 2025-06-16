@@ -31,12 +31,14 @@ export async function GET() {
     // Get distinct cards per status
     const cardsByStatus = {};
     allCards.forEach(card => {
-      const status = card.status || "unknown";
+      const rawStatus = card.status || "unknown";
+      const status = rawStatus.trim().toLowerCase(); // Normalize status
       if (!cardsByStatus[status]) {
         cardsByStatus[status] = [];
       }
       cardsByStatus[status].push(card);
     });
+
 
     // Summary
     const totalCards = allCards.length;

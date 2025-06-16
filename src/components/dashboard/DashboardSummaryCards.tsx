@@ -64,13 +64,7 @@ const DashboardSummaryCards: React.FC<DashboardSummaryCardsProps> = ({
       value: getCount("active"),
       icon: <CheckCircle size={28} className="text-green-600" />,
       border: "border-green-100",
-    },
-    {
-      label: "Sales Teams",
-      value: salesTeams,
-      icon: <CreditCard size={28} className="text-indigo-600" />,
-      border: "border-indigo-100",
-    },
+    }
   ];
 
   return (
