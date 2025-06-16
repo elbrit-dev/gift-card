@@ -12,7 +12,7 @@ interface InProgressCard {
   empPhone: string;
   expiryDate: string;
   designation: string;
-  qr: string; // base64 QR code string
+  qr: string;
 }
 
 interface InProgressCardsTableProps {
@@ -23,6 +23,7 @@ interface InProgressCardsTableProps {
 const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, pageSize = 5 }) => {
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
+  const [modalQR, setModalQR] = useState<string | null>(null); // 👈 for modal
 
   const formattedCards = cards
     .filter(card => card.status !== "active" && card.status !== "drscanned")
@@ -80,108 +81,130 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
-      <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
-        Cards in Progress Activation
-        <button
-          className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-          onClick={downloadSelectedAsCSV}
-          disabled={selectedCards.length === 0}
-        >
-          Download Selected
-        </button>
-      </div>
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-[1300px] w-full text-sm md:text-base border-collapse border border-gray-200 dark:border-gray-700">
-          <thead>
-            <tr className="bg-gray-50 dark:bg-gray-800">
-              <th className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
-                <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
-              </th>
-              {[
-                "Gift Card No", "Sales Team", "HQ", "Status",
-                "Doctor Name", "Doctor Phone", "Employee Name",
-                "Employee Designation", "Employee Phone", "Expiry", "QR Code"
-              ].map((title, idx) => (
-                <th
-                  key={idx}
-                  className="px-3 py-2 font-semibold text-left text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700"
-                >
-                  {title}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {pagedCards.length === 0 ? (
-              <tr>
-                <td colSpan={12} className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700">
-                  No cards in progress
-                </td>
-              </tr>
-            ) : (
-              pagedCards.map((card, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                  <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={selectedCards.includes(card.cardNo)}
-                      onChange={() => toggleSelect(card.cardNo)}
-                    />
-                  </td>
-                  <td className="px-3 py-2 font-mono text-sm break-all border dark:border-gray-700">{card.cardNo}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.salesTeam}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.hq}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">
-                    <span className="inline-block px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs font-semibold tracking-wide shadow-sm">
-                      {card.status}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.drName}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.drPhoneNumber}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.empName}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.designation}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.empPhone}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{card.expiry}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">
-                    {card.qr ? (
-                      <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(card.qr)}`}
-                        alt="QR"
-                        className="h-12 w-12 object-contain"
-                      />
-                    ) : (
-                      <span className="text-gray-400">N/A</span>
-                    )}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-b-2xl">
+    <>
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
+        <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
+          Cards in Progress Activation
           <button
-            className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
+            className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+            onClick={downloadSelectedAsCSV}
+            disabled={selectedCards.length === 0}
           >
-            Prev
-          </button>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Page {page} of {totalPages}
-          </div>
-          <button
-            className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
-            onClick={() => setPage(page + 1)}
-            disabled={page === totalPages}
-          >
-            Next
+            Download Selected
           </button>
         </div>
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-[1300px] w-full text-sm md:text-base border-collapse border border-gray-200 dark:border-gray-700">
+            <thead>
+              <tr className="bg-gray-50 dark:bg-gray-800">
+                <th className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                  <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+                </th>
+                {[
+                  "Gift Card No", "Sales Team", "HQ", "Status",
+                  "Doctor Name", "Doctor Phone", "Employee Name",
+                  "Employee Designation", "Employee Phone", "Expiry", "QR Code"
+                ].map((title, idx) => (
+                  <th
+                    key={idx}
+                    className="px-3 py-2 font-semibold text-left text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700"
+                  >
+                    {title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {pagedCards.length === 0 ? (
+                <tr>
+                  <td colSpan={12} className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700">
+                    No cards in progress
+                  </td>
+                </tr>
+              ) : (
+                pagedCards.map((card, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={selectedCards.includes(card.cardNo)}
+                        onChange={() => toggleSelect(card.cardNo)}
+                      />
+                    </td>
+                    <td className="px-3 py-2 font-mono text-sm break-all border dark:border-gray-700">{card.cardNo}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.salesTeam}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.hq}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">
+                      <span className="inline-block px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs font-semibold tracking-wide shadow-sm">
+                        {card.status}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.drName}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.drPhoneNumber}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.empName}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.designation}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.empPhone}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.expiry}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">
+                      {card.qr ? (
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(card.qr)}`}
+                          alt="QR"
+                          className="h-12 w-12 object-contain cursor-pointer"
+                          onClick={() => setModalQR(card.qr)}
+                        />
+                      ) : (
+                        <span className="text-gray-400">N/A</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-b-2xl">
+            <button
+              className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Prev
+            </button>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Page {page} of {totalPages}
+            </div>
+            <button
+              className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      {modalQR && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full relative">
+            <button
+              className="absolute top-1 right-2 text-gray-600 hover:text-black text-xl font-bold"
+              onClick={() => setModalQR(null)}
+            >
+              ×
+            </button>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(modalQR)}`}
+              alt="Full QR"
+              className="w-full object-contain"
+            />
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
