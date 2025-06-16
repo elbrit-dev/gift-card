@@ -208,7 +208,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
           onClick={() => setModalQR(null)}
         >
           <div
-            className="bg-transparent p-5 rounded-lg relative shadow-xl max-w-sm w-full"
+            className="bg-white p-5 rounded-lg relative shadow-xl max-w-sm w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -217,16 +217,25 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
             >
               ×
             </button>
+
             <img
               src={modalQR}
-              width={200} // ✅ Set fixed width
+              width={200}
               alt="QR Enlarged"
-              className="object-contain" // ✅ Removed w-full
+              className="object-contain mb-4"
+            />
+
+            {/* ✅ Extracted message link */}
+            <p className="text-sm font-semibold text-gray-700 mb-1">WhatsApp Message Link:</p>
+            <input
+              type="text"
+              value={new URL(modalQR).searchParams.get("data") || ""}
+              readOnly
+              className="w-full text-xs p-2 rounded border border-gray-300 bg-gray-50 font-mono text-gray-700"
             />
           </div>
         </div>
       )}
-
     </>
   );
 };
