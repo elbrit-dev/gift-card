@@ -22,27 +22,25 @@ export async function POST(req) {
     }
 
     if (mode === "activate") {
-      const webhookUrl = "https://elbrit-dev.app.n8n.cloud/webhook/b60a258f-0271-444c-9c13-e3fce58f11f7";
-      const payload = { data: cardNos.map(String) };
+      const baseUrl = "https://elbrit-dev.app.n8n.cloud/webhook/b60a258f-0271-444c-9c13-e3fce58f11f7";
+      const query = new URLSearchParams();
+      cardNos.forEach(card => query.append("data", String(card)));
+      const webhookUrl = `${baseUrl}?${query.toString()}`;
 
-      console.log("📤 Sending POST to Webhook:", webhookUrl);
-      console.log("📨 Payload:", payload);
+      console.log("📤 Sending GET to Webhook:", webhookUrl);
 
       const response = await fetch(webhookUrl, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
       });
 
-      const webhookResult = await response.json();
-
-      console.log("✅ Webhook Response:", webhookResult);
+      const resultText = await response.text(); // GET responses may not be JSON
+      console.log("✅ Webhook Response Text:", resultText);
 
       if (!response.ok) {
-        throw new Error(webhookResult?.error || "Webhook call failed");
+        throw new Error(`Webhook call failed: ${resultText}`);
       }
 
-      return NextResponse.json({ success: true, webhookResponse: webhookResult });
+      return NextResponse.json({ success: true, webhookResponse: resultText });
     }
 
     if (mode === "reset") {
