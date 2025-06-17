@@ -29,7 +29,7 @@ export async function POST(req) {
       console.log("📨 Payload:", payload);
 
       const response = await fetch(webhookUrl, {
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
