@@ -78,7 +78,7 @@ export async function GET() {
         cardNo: row.cardNo || '',
         by: row.by || '',
         extraText: readableMeta,
-        timestamp: row.time ? new Date(row.time).toISOString() : "",
+        timestamp: row.time,
       };
     });
 
