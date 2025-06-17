@@ -11,6 +11,7 @@ interface Card {
   drName: string;
   drPhoneNumber: string;
   verifyName: string;
+  verifyScore: string;
   empName: string;
   designation: string;
   empPhone: string;
@@ -59,8 +60,9 @@ export default function GiftCardsTable({
               <th className="px-3 py-3">HQ</th>
               <th className="px-3 py-3">Sales Team</th>
               <th className="px-3 py-3">Dr Name</th>
-              <th className="px-3 py-3">Dr Phone</th>
               <th className="px-3 py-3">Verify Name</th>
+              <th className="px-3 py-3">Verify Score</th>
+              <th className="px-3 py-3">Dr Phone</th>
               <th className="px-3 py-3">Emp Name</th>
               <th className="px-3 py-3">Emp Phone</th>
               <th className="px-3 py-3">Created Date</th>
@@ -103,8 +105,9 @@ export default function GiftCardsTable({
                   <td className="px-3 py-3">{card.hq}</td>
                   <td className="px-3 py-3">{card.salesTeam}</td>
                   <td className="px-3 py-3">{card.drName}</td>
-                  <td className="px-3 py-3">{card.drPhoneNumber}</td>
                   <td className="px-3 py-3">{card.verifyName}</td>
+                  <td className="px-3 py-3">{card.verifyScore}</td>
+                  <td className="px-3 py-3">{card.drPhoneNumber}</td>
                   <td className="px-3 py-3">{card.empName}</td>
                   <td className="px-3 py-3">{card.empPhone}</td>
                   <td className="px-3 py-3">{card.createdDate}</td>

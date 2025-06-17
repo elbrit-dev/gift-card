@@ -105,7 +105,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                 </th>
                 {[
                   "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status",
-                  "Dr Name", "Dr Phone", "Verify Name", "Emp Name", "Emp Designation",
+                  "Dr Name", "Dr Phone", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
                   "Emp Phone", "Expiry", "QR"
                 ].map((title, idx) => (
                   <th

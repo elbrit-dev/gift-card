@@ -23,6 +23,7 @@ export async function GET() {
         "drCode",
         "empName",
         "verifyName",
+        "verifyScore",
         "drName",
         "hq",
         "designation",
