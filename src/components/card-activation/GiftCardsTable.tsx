@@ -7,6 +7,7 @@ interface Card {
   sl: string;
   salesTeam: string;
   hq: string;
+  amount: string;
   status: string;
   drName: string;
   drPhoneNumber: string;
@@ -17,7 +18,6 @@ interface Card {
   empPhone: string;
   expiryDate: string;
   expiry?: string;
-  amount: string;
   createdDate: string;
 }
 
@@ -106,7 +106,22 @@ export default function GiftCardsTable({
                   <td className="px-3 py-3">{card.salesTeam}</td>
                   <td className="px-3 py-3">{card.drName}</td>
                   <td className="px-3 py-3">{card.verifyName}</td>
-                  <td className="px-3 py-3">{card.verifyScore}</td>
+                  <td className="px-3 py-3">
+                    <span
+                      className={`inline-block px-2 py-1 text-xs font-semibold rounded-full
+                        ${
+                          Number(card.verifyScore) >= 90
+                            ? "bg-green-100 text-green-800"
+                            : Number(card.verifyScore) >= 70
+                            ? "bg-yellow-100 text-yellow-800"
+                            : Number(card.verifyScore) >= 50
+                            ? "bg-orange-100 text-orange-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                    >
+                      {card.verifyScore ?? "--"}
+                    </span>
+                  </td>
                   <td className="px-3 py-3">{card.drPhoneNumber}</td>
                   <td className="px-3 py-3">{card.empName}</td>
                   <td className="px-3 py-3">{card.empPhone}</td>

@@ -16,6 +16,7 @@ export default function ResetCardForm() {
     setMessage("");
 
     try {
+      // Step 1: Reset the card
       const res = await fetch("/api/cards/activate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,6 +25,25 @@ export default function ResetCardForm() {
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Failed to reset card");
+
+      // Step 2: Get user info
+      const storedUser = localStorage.getItem("logged_in_user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
+      // Step 3: Log the activity
+      if (user?.email && user?.name) {
+        await fetch("/api/cards/activity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cardNos: [cardNo],
+            user: {
+              name: user.name,
+              email: user.email,
+            },
+          }),
+        });
+      }
 
       setMessage(`Card ${cardNo} reset successfully.`);
       setCardNo("");

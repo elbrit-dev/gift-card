@@ -21,6 +21,7 @@ export async function GET() {
         "createdDate",
         "employeeCode",
         "drCode",
+        "amount",
         "empName",
         "verifyName",
         "verifyScore",
