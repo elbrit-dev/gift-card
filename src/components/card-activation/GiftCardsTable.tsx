@@ -42,76 +42,83 @@ export default function GiftCardsTable({
   const allSelected = cards.length > 0 && cards.every(card => selectedCardNos.has(card.cardNo));
 
   return (
-    <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
-      <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
-        <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1f2937] border-b border-gray-300 dark:border-gray-600 text-xs uppercase font-semibold tracking-wide">
-          <tr>
-            <th className="px-3 py-3"><input type="checkbox" checked={allSelected} onChange={() => onRowSelect("all")} /></th>
-            <th className="px-3 py-3">Card No</th>
-            <th className="px-3 py-3">KIT</th>
-            <th className="px-3 py-3">Serial</th>
-            <th className="px-3 py-3">Expiry</th>
-            <th className="px-3 py-3">Amount</th>
-            <th className="px-3 py-3">Status</th>
-            <th className="px-3 py-3">HQ</th>
-            <th className="px-3 py-3">Sales Team</th>
-            <th className="px-3 py-3">Dr Name</th>
-            <th className="px-3 py-3">Dr Phone</th>
-            <th className="px-3 py-3">Verify Name</th>
-            <th className="px-3 py-3">Emp Name</th>
-            <th className="px-3 py-3">Emp Phone</th>
-            <th className="px-3 py-3">Created Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cards.length === 0 ? (
+    <div className="mt-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
+          <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1f2937] border-b border-gray-300 dark:border-gray-600 text-xs uppercase font-semibold tracking-wide">
             <tr>
-              <td colSpan={15} className="py-6 text-center text-gray-400 dark:text-gray-500">
-                No cards found
-              </td>
+              <th className="px-3 py-3"><input type="checkbox" checked={allSelected} onChange={() => onRowSelect("all")} /></th>
+              <th className="px-3 py-3">Card No</th>
+              <th className="px-3 py-3">KIT</th>
+              <th className="px-3 py-3">Serial</th>
+              <th className="px-3 py-3">Expiry</th>
+              <th className="px-3 py-3">Amount</th>
+              <th className="px-3 py-3">Status</th>
+              <th className="px-3 py-3">HQ</th>
+              <th className="px-3 py-3">Sales Team</th>
+              <th className="px-3 py-3">Dr Name</th>
+              <th className="px-3 py-3">Dr Phone</th>
+              <th className="px-3 py-3">Verify Name</th>
+              <th className="px-3 py-3">Emp Name</th>
+              <th className="px-3 py-3">Emp Phone</th>
+              <th className="px-3 py-3">Created Date</th>
             </tr>
-          ) : (
-            cards.map((card, index) => (
-              <tr
-                key={card.cardNo}
-                className={`transition-all ${
-                  index % 2 === 0 ? "bg-white dark:bg-[#1a1d25]" : "bg-gray-50 dark:bg-[#212836]"
-                } hover:bg-gray-100 dark:hover:bg-[#2b3545]`}
-              >
-                <td className="px-3 py-3">
-                  <input type="checkbox" checked={selectedCardNos.has(card.cardNo)} onChange={() => onRowSelect(card.cardNo)} />
-                </td>
-                <td className="px-3 py-3">{card.cardNo}</td>
-                <td className="px-3 py-3">{card.kit}</td>
-                <td className="px-3 py-3">{card.sl}</td>
-                <td className="px-3 py-3">{card.expiry || card.expiryDate}</td>
-                <td className="px-3 py-3">{card.amount}</td>
-                <td className="px-3 py-3">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      card.status.toLowerCase() === "active"
-                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                    }`}
-                  >
-                    {card.status}
-                  </span>
-                </td>
-                <td className="px-3 py-3">{card.hq}</td>
-                <td className="px-3 py-3">{card.salesTeam}</td>
-                <td className="px-3 py-3">{card.drName}</td>
-                <td className="px-3 py-3">{card.drPhoneNumber}</td>
-                <td className="px-3 py-3">{card.verifyName}</td>
-                <td className="px-3 py-3">{card.empName}</td>
-                <td className="px-3 py-3">{card.empPhone}</td>
-                <td className="px-3 py-3">{card.createdDate}</td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+          </thead>
+        </table>
+      </div>
 
-      {/* Pagination */}
+      <div className="max-h-[450px] overflow-y-auto">
+        <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
+          <tbody>
+            {cards.length === 0 ? (
+              <tr>
+                <td colSpan={15} className="py-6 text-center text-gray-400 dark:text-gray-500">
+                  No cards found
+                </td>
+              </tr>
+            ) : (
+              cards.map((card, index) => (
+                <tr
+                  key={card.cardNo}
+                  className={`transition-all ${
+                    index % 2 === 0 ? "bg-white dark:bg-[#1a1d25]" : "bg-gray-50 dark:bg-[#212836]"
+                  } hover:bg-gray-100 dark:hover:bg-[#2b3545]`}
+                >
+                  <td className="px-3 py-3">
+                    <input type="checkbox" checked={selectedCardNos.has(card.cardNo)} onChange={() => onRowSelect(card.cardNo)} />
+                  </td>
+                  <td className="px-3 py-3">{card.cardNo}</td>
+                  <td className="px-3 py-3">{card.kit}</td>
+                  <td className="px-3 py-3">{card.sl}</td>
+                  <td className="px-3 py-3">{card.expiry || card.expiryDate}</td>
+                  <td className="px-3 py-3">{card.amount}</td>
+                  <td className="px-3 py-3">
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                        card.status.toLowerCase() === "active"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                      }`}
+                    >
+                      {card.status}
+                    </span>
+                  </td>
+                  <td className="px-3 py-3">{card.hq}</td>
+                  <td className="px-3 py-3">{card.salesTeam}</td>
+                  <td className="px-3 py-3">{card.drName}</td>
+                  <td className="px-3 py-3">{card.drPhoneNumber}</td>
+                  <td className="px-3 py-3">{card.verifyName}</td>
+                  <td className="px-3 py-3">{card.empName}</td>
+                  <td className="px-3 py-3">{card.empPhone}</td>
+                  <td className="px-3 py-3">{card.createdDate}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination Footer */}
       <div className="flex justify-between items-center px-4 py-3 bg-gray-50 dark:bg-[#1f2937] border-t border-gray-200 dark:border-gray-700 text-sm">
         <div className="text-gray-600 dark:text-gray-400">
           Page <strong>{page}</strong> of <strong>{totalPages}</strong>
@@ -134,5 +141,6 @@ export default function GiftCardsTable({
         </div>
       </div>
     </div>
+
   );
 }

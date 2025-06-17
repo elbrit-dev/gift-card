@@ -11,6 +11,15 @@ import { msalInstance } from "@/auth/msalInstance";
 import AuthProvider from '@/auth/AuthProvider';
 import AuthGuard from "@/components/AuthGuard";
 
+// Add this at the top
+export const metadata = {
+  title: "Gift Card Management",
+  description: "Elbrit Gift Card Portal",
+  icons: {
+    icon: "/images/image.jpeg", // ✅ path to your custom favicon
+  },
+};
+
 const outfit = Outfit({
   subsets: ["latin"],
 });

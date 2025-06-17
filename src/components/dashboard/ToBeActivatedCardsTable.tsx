@@ -11,6 +11,7 @@ interface ToBeActivatedCard {
   drName: string;
   drPhoneNumber: string;
   verifyName: string;
+  verifyScore: string;
   empName: string;
   designation: string;
   empPhone: string;
@@ -59,8 +60,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
     const selectedData = formattedCards.filter((card) => selectedCards.includes(card.cardNo));
     const csv = [
       [
-        "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status",
-        "Dr Name", "Dr Phone", "Verify Name", "Emp Name", "Emp Designation",
+        "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone",
+        "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
         "Emp Phone", "Expiry", "QR Data"
       ],
       ...selectedData.map((c) => [
@@ -149,9 +150,26 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                         {card.status || "--"}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.drName || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.drPhoneNumber || "--"}</td>
+                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.drName || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.verifyName || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                      {card.verifyScore !== undefined && card.verifyScore !== null ? (
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-bold ${
+                            Number(card.verifyScore) >= 76
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : Number(card.verifyScore) >= 41
+                              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                              : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          }`}
+                        >
+                          {card.verifyScore}%
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">N/A</span>
+                      )}
+                    </td>
                     <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.empName || "--"}</td>
                     <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.designation || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.empPhone || "--"}</td>
