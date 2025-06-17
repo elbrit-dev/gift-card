@@ -6,6 +6,19 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
+// Helper: format to "17 Jun 2025 14:50" (IST, 24-hour)
+function formatISTTimestamp(dateInput) {
+  return new Date(dateInput).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).replace(",", "");
+}
+
 export async function GET() {
   try {
     // 1. Fetch all cards
@@ -33,19 +46,24 @@ export async function GET() {
       ORDER BY "createdDate" DESC
     `);
 
-    // Get distinct cards per status
+    // Optional: Format createdDate if used in frontend
+    allCards.forEach(card => {
+      if (card.createdDate) {
+        card.createdDate = formatISTTimestamp(card.createdDate);
+      }
+    });
+
+    // Group by status
     const cardsByStatus = {};
     allCards.forEach(card => {
       const rawStatus = card.status || "unknown";
-      const status = rawStatus.trim().toLowerCase(); // Normalize status
+      const status = rawStatus.trim().toLowerCase();
       if (!cardsByStatus[status]) {
         cardsByStatus[status] = [];
       }
       cardsByStatus[status].push(card);
     });
 
-
-    // Summary
     const totalCards = allCards.length;
     const activeCards = cardsByStatus["active"]?.length || 0;
     const pendingActivation = totalCards - activeCards;
@@ -74,11 +92,10 @@ export async function GET() {
         activityType: row.activityType || '',
         cardNo: row.cardNo || '',
         by: row.by || '',
-        extraText: readableMeta, // ← flattened key-value string
-        timestamp: row.time,
+        extraText: readableMeta,
+        timestamp: formatISTTimestamp(row.time),
       };
     });
-
 
     // 3. Return structured response
     return NextResponse.json({
@@ -98,7 +115,6 @@ export async function GET() {
       ],
       activities,
     });
-
 
   } catch (err) {
     console.error('[API][dashboard][ERROR]', err);

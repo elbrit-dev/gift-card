@@ -6,12 +6,19 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// Helper to get IST timestamp in required format
-function getISTTimestamp() {
-  const now = new Date();
-  const offsetMs = 5.5 * 60 * 60 * 1000;
-  const istTime = new Date(now.getTime() + offsetMs);
-  return istTime.toISOString().replace("Z", "+05:30");
+// Helper to get IST timestamp in "17 Jun 2025 14:50" format
+function getFormattedISTTimestamp() {
+  const date = new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  return date.replace(",", ""); // remove comma after date
 }
 
 export async function POST(req) {
@@ -27,7 +34,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "User info missing" }, { status: 400 });
     }
 
-    const now = getISTTimestamp();
+    const now = getFormattedISTTimestamp();
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
