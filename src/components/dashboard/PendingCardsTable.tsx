@@ -297,12 +297,34 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
             <p className="text-sm font-semibold text-gray-700 mb-1">
               WhatsApp Message Link:
             </p>
-            <input
-              type="text"
-              value={new URL(modalQR).searchParams.get("data") || ""}
-              readOnly
-              className="w-full text-xs p-2 rounded border border-gray-300 bg-gray-50 font-mono text-gray-700"
-            />
+
+            {(() => {
+              try {
+                const link = new URL(modalQR).searchParams.get("data");
+                return link ? (
+                  <>
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-blue-600 underline text-xs mb-2 break-all"
+                    >
+                      {link}
+                    </a>
+                    <input
+                      type="text"
+                      value={link}
+                      readOnly
+                      className="w-full text-xs p-2 rounded border border-gray-300 bg-gray-50 font-mono text-gray-700"
+                    />
+                  </>
+                ) : (
+                  <p className="text-xs text-red-600">Invalid link</p>
+                );
+              } catch {
+                return <p className="text-xs text-red-600">Invalid QR URL</p>;
+              }
+            })()}
           </div>
         </div>
       )}
