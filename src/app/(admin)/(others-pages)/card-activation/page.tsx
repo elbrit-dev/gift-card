@@ -18,6 +18,7 @@ interface Card {
   drPhoneNumber: string;
   verifyName: string;
   empName: string;
+  verifyScore: string;
   designation: string;
   empPhone: string;
   expiryDate: string;
@@ -140,8 +141,9 @@ export default function CardActivationPage() {
         "Status",
         "HQ",
         "Dr Name",
-        "Dr Phone",
         "Verify Name",
+        "Verify Score",
+        "Dr Phone",
         "Emp Name",
         "Emp Designation",
         "Emp Phone",
@@ -158,8 +160,9 @@ export default function CardActivationPage() {
           c.status,
           c.hq,
           c.drName,
-          c.drPhoneNumber,
           c.verifyName,
+          c.verifyScore,
+          c.drPhoneNumber,
           c.empName,
           c.designation,
           c.empPhone,
