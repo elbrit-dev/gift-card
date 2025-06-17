@@ -275,27 +275,33 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
 
       {modalQR && (
         <div
-          className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto"
+          className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center backdrop-blur-sm"
           onClick={() => setModalQR(null)}
         >
           <div
-            className="bg-white p-5 rounded-lg relative shadow-xl max-w-sm w-full"
+            className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-full relative"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button */}
             <button
-              className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl"
+              className="absolute top-3 right-4 text-xl text-gray-400 hover:text-gray-800 dark:hover:text-white"
               onClick={() => setModalQR(null)}
             >
-              ×
+              &times;
             </button>
-            <img
-              src={modalQR}
-              width={200}
-              alt="QR Enlarged"
-              className="object-contain mb-4"
-            />
-            <p className="text-sm font-semibold text-gray-700 mb-1">
-              WhatsApp Message Link:
+
+            {/* QR Code Image */}
+            <div className="flex justify-center mb-4">
+              <img
+                src={modalQR}
+                alt="QR Code"
+                className="h-48 w-48 object-contain rounded-md shadow"
+              />
+            </div>
+
+            {/* WhatsApp Message Link */}
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 text-center">
+              WhatsApp Message Link
             </p>
 
             {(() => {
@@ -306,21 +312,20 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-blue-600 underline text-xs break-words"
+                    className="block text-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 text-sm"
                   >
-                    {link}
+                    Open in WhatsApp
                   </a>
                 ) : (
-                  <p className="text-xs text-red-600">Invalid link</p>
+                  <p className="text-xs text-red-600 text-center">Invalid link</p>
                 );
               } catch {
-                return <p className="text-xs text-red-600">Invalid QR URL</p>;
+                return <p className="text-xs text-red-600 text-center">Invalid QR URL</p>;
               }
             })()}
           </div>
         </div>
       )}
-
     </>
   );
 };
