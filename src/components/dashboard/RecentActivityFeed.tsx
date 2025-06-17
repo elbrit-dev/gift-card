@@ -14,19 +14,19 @@ interface RecentActivityFeedProps {
   activities: Activity[];
 }
 
+// ✅ Updated function for 24-hour IST formatting
 function formatDateTime(iso: string) {
   const d = new Date(iso);
-  const date = d.toLocaleDateString(undefined, {
+  const formatted = d.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
     day: "2-digit",
     month: "short",
     year: "numeric",
-  });
-  const time = d.toLocaleTimeString(undefined, {
-    hour: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
-    hour12: true,
+    hour12: false,
   });
-  return `${date}, ${time}`;
+  return formatted.replace(",", ""); // → "17 Jun 2025 14:50"
 }
 
 const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activities }) => {
