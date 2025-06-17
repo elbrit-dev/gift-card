@@ -23,8 +23,10 @@ export async function POST(req) {
 
     if (mode === "activate") {
       const baseUrl = "https://elbrit-dev.app.n8n.cloud/webhook/b60a258f-0271-444c-9c13-e3fce58f11f7";
+
       const query = new URLSearchParams();
-      cardNos.forEach(card => query.append("data", String(card)));
+      cardNos.forEach((card, i) => query.append(`data[${i}]`, String(card)));
+
       const webhookUrl = `${baseUrl}?${query.toString()}`;
 
       console.log("📤 Sending GET to Webhook:", webhookUrl);
@@ -33,7 +35,7 @@ export async function POST(req) {
         method: "GET",
       });
 
-      const resultText = await response.text(); // GET responses may not be JSON
+      const resultText = await response.text();
       console.log("✅ Webhook Response Text:", resultText);
 
       if (!response.ok) {
@@ -74,6 +76,7 @@ export async function POST(req) {
 
     console.error("❌ Invalid mode provided");
     return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
+
   } catch (err) {
     console.error("❌ Operation Error:", err);
     return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
