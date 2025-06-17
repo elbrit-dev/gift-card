@@ -66,28 +66,19 @@ export async function GET() {
         meta = {};
       }
 
-      const readableMeta = [
-        meta.userName ? `User: ${meta.userName}` : '',
-        meta.empName ? `Name: ${meta.empName}` : '',
-        meta.empPhone ? `Phone: ${meta.empPhone}` : '',
-        meta.salesTeam ? `Team: ${meta.salesTeam}` : '',
-        meta.hq ? `HQ: ${meta.hq}` : '',
-        meta.drName ? `Doctor: ${meta.drName}` : '',
-        meta.drPhoneNumber ? `DrPhone: ${meta.drPhoneNumber}` : '',
-        meta.drCheckIn ? `Checked In` : ''
-      ]
-        .filter(Boolean)
+      const readableMeta = Object.entries(meta)
+        .map(([key, value]) => `${key}: ${value}`)
         .join(' • ');
 
       return {
         activityType: row.activityType || '',
         cardNo: row.cardNo || '',
         by: row.by || '',
-        extraText: readableMeta,
-        timestamp: row.time, // keep raw time to let frontend handle local display
-        rawComments: meta,   // <-- include full parsed JSON if needed on frontend
+        extraText: readableMeta, // ← flattened key-value string
+        timestamp: row.time,
       };
     });
+
 
     // 3. Return structured response
     return NextResponse.json({
