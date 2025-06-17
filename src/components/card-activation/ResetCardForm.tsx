@@ -12,15 +12,6 @@ export default function ResetCardForm() {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const email = user.email;
-    const name = user.name;
-
-    if (!email || !name) {
-      setMessage("User is not logged in or user info is missing.");
-      return;
-    }
-
     setLoading(true);
     setMessage("");
 
@@ -28,12 +19,7 @@ export default function ResetCardForm() {
       const res = await fetch("/api/cards/activate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "reset",
-          cardNos: [cardNo],
-          email,
-          name,
-        }),
+        body: JSON.stringify({ mode: "reset", cardNos: [cardNo] }),
       });
 
       const result = await res.json();
