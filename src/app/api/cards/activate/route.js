@@ -10,20 +10,19 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const cardNos = body?.cardNos;
-    const mode = body?.mode || "activate"; // default to activate
+    const mode = body?.mode || "activate";
 
     if (!Array.isArray(cardNos) || cardNos.length === 0) {
       return NextResponse.json({ error: "No card numbers provided" }, { status: 400 });
     }
 
     if (mode === "activate") {
-      // Send to webhook instead of DB update
       const webhookUrl = "https://elbrit-dev.app.n8n.cloud/webhook/b60a258f-0271-444c-9c13-e3fce58f11f7";
 
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardNos }),
+        body: JSON.stringify({ data: cardNos }), // 👈 changed to `data` key
       });
 
       const webhookResult = await response.json();
