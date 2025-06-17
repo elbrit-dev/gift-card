@@ -7,6 +7,8 @@ export interface Card {
   kit: string;
   SL:string;
   expiryDate: string;
+  verifyName: string;
+  verifyScore: string;
   amount: string;
   status: string;
   salesTeam: string;

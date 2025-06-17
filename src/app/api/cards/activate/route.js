@@ -17,14 +17,22 @@ export async function POST(req) {
     }
 
     if (mode === "activate") {
-      const result = await pool.query(
-        `UPDATE "GiftCardDetails"
-         SET "status" = 'active'
-         WHERE "cardNo" = ANY($1::text[])`,
-        [cardNos]
-      );
+      // Send to webhook instead of DB update
+      const webhookUrl = "https://elbrit-dev.app.n8n.cloud/webhook/b60a258f-0271-444c-9c13-e3fce58f11f7";
 
-      return NextResponse.json({ success: true, updated: result.rowCount });
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardNos }),
+      });
+
+      const webhookResult = await response.json();
+
+      if (!response.ok) {
+        throw new Error(webhookResult?.error || "Webhook call failed");
+      }
+
+      return NextResponse.json({ success: true, webhookResponse: webhookResult });
     }
 
     if (mode === "reset") {
@@ -54,7 +62,7 @@ export async function POST(req) {
 
     return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
   } catch (err) {
-    console.error("❌ DB Operation Error:", err);
+    console.error("❌ Operation Error:", err);
     return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
   }
 }
