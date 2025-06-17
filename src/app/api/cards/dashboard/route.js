@@ -58,7 +58,7 @@ export async function GET() {
       ORDER BY "time" DESC
     `);
 
-    const activities = activityRows.map(row => {
+    const activities = activityRows.map((row) => {
       let meta = {};
       try {
         meta = row.comments ? JSON.parse(row.comments) : {};
@@ -67,18 +67,25 @@ export async function GET() {
       }
 
       const readableMeta = [
+        meta.userName ? `User: ${meta.userName}` : '',
         meta.empName ? `Name: ${meta.empName}` : '',
         meta.empPhone ? `Phone: ${meta.empPhone}` : '',
         meta.salesTeam ? `Team: ${meta.salesTeam}` : '',
-        meta.hq ? `HQ: ${meta.hq}` : ''
-      ].filter(Boolean).join(' • ');
+        meta.hq ? `HQ: ${meta.hq}` : '',
+        meta.drName ? `Doctor: ${meta.drName}` : '',
+        meta.drPhoneNumber ? `DrPhone: ${meta.drPhoneNumber}` : '',
+        meta.drCheckIn ? `Checked In` : ''
+      ]
+        .filter(Boolean)
+        .join(' • ');
 
       return {
         activityType: row.activityType || '',
         cardNo: row.cardNo || '',
         by: row.by || '',
         extraText: readableMeta,
-        timestamp: row.time,
+        timestamp: row.time, // keep raw time to let frontend handle local display
+        rawComments: meta,   // <-- include full parsed JSON if needed on frontend
       };
     });
 
