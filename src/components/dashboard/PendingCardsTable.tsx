@@ -24,18 +24,41 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [modalQR, setModalQR] = useState<string | null>(null);
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    cardNo: "",
+    salesTeam: "",
+    hq: "",
+    status: "",
+    drName: "",
+    drPhoneNumber: "",
+    empName: "",
+    empPhone: "",
+    designation: "",
+    expiry: "",
+  });
 
-  const formattedCards = cards
+  const filteredCards = cards
     .filter(card => card.status !== "active" && card.status !== "drscanned")
-    .map(card => ({
-      ...card,
-      expiry: card.expiryDate || "--",
-    }));
+    .filter(card => {
+      return (
+        (!filters.cardNo || card.cardNo.includes(filters.cardNo)) &&
+        (!filters.salesTeam || card.salesTeam === filters.salesTeam) &&
+        (!filters.hq || card.hq.includes(filters.hq)) &&
+        (!filters.status || card.status === filters.status) &&
+        (!filters.drName || card.drName.toLowerCase().includes(filters.drName.toLowerCase())) &&
+        (!filters.drPhoneNumber || card.drPhoneNumber.includes(filters.drPhoneNumber)) &&
+        (!filters.empName || card.empName.toLowerCase().includes(filters.empName.toLowerCase())) &&
+        (!filters.designation || card.designation === filters.designation) &&
+        (!filters.empPhone || card.empPhone.includes(filters.empPhone)) &&
+        (!filters.expiry || card.expiryDate.includes(filters.expiry))
+      );
+    });
 
-  const totalPages = Math.ceil(formattedCards.length / pageSize);
-  const pagedCards = formattedCards.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.ceil(filteredCards.length / pageSize);
+  const pagedCards = filteredCards.slice((page - 1) * pageSize, page * pageSize);
 
-  const allCardNos = formattedCards.map(card => card.cardNo);
+  const allCardNos = filteredCards.map(card => card.cardNo);
   const allSelected = allCardNos.length > 0 && allCardNos.every(id => selectedCards.includes(id));
 
   const toggleSelectAll = () => {
@@ -55,7 +78,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
   };
 
   const downloadSelectedAsCSV = () => {
-    const selectedData = formattedCards.filter(card => selectedCards.includes(card.cardNo));
+    const selectedData = filteredCards.filter(card => selectedCards.includes(card.cardNo));
     const csv = [
       [
         "Gift Card No", "Sales Team", "HQ", "Status",
@@ -65,7 +88,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
       ...selectedData.map(c => [
         c.cardNo, c.salesTeam, c.hq, c.status,
         c.drName, c.drPhoneNumber, c.empName,
-        c.designation, c.empPhone, c.expiry, c.qr
+        c.designation, c.empPhone, c.expiryDate, c.qr
       ].map(escapeCSV))
     ]
       .map(row => row.join(","))
@@ -85,14 +108,23 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
           Cards in Progress Activation
-          <button
-            className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-            onClick={downloadSelectedAsCSV}
-            disabled={selectedCards.length === 0}
-          >
-            Download Selected
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="text-sm px-4 py-1 rounded bg-gray-600 text-white hover:bg-gray-700"
+              onClick={() => setFilterPanelOpen(true)}
+            >
+              Filter
+            </button>
+            <button
+              className="text-sm px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              onClick={downloadSelectedAsCSV}
+              disabled={selectedCards.length === 0}
+            >
+              Download Selected
+            </button>
+          </div>
         </div>
+
         <div className="w-full overflow-x-auto">
           <table className="min-w-[1300px] w-full text-sm md:text-base border-collapse border border-gray-200 dark:border-gray-700">
             <thead>
@@ -140,7 +172,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
                     <td className="px-3 py-2 border dark:border-gray-700">{card.empName}</td>
                     <td className="px-3 py-2 border dark:border-gray-700">{card.designation}</td>
                     <td className="px-3 py-2 border dark:border-gray-700">{card.empPhone}</td>
-                    <td className="px-3 py-2 border dark:border-gray-700">{card.expiry}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700">{card.expiryDate || "--"}</td>
                     <td className="px-3 py-2 border dark:border-gray-700">
                       {card.qr ? (
                         <img
@@ -159,6 +191,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
             </tbody>
           </table>
         </div>
+
         {totalPages > 1 && (
           <div className="flex justify-between items-center px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-b-2xl">
             <button
@@ -181,6 +214,52 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({ cards, page
           </div>
         )}
       </div>
+
+      {filterPanelOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-50 flex justify-end"
+          onClick={() => setFilterPanelOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-gray-900 h-full p-6 shadow-xl overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Filter Cards</h2>
+            <div className="space-y-4">
+              {Object.entries(filters).map(([key, value]) => (
+                <input
+                  key={key}
+                  type="text"
+                  placeholder={key}
+                  value={value}
+                  onChange={e => setFilters(prev => ({ ...prev, [key]: e.target.value }))}
+                  className="w-full p-2 rounded border border-gray-300 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ))}
+            </div>
+            <div className="mt-6 flex justify-between">
+              <button
+                onClick={() => {
+                  setFilters({
+                    cardNo: "", salesTeam: "", hq: "", status: "", drName: "",
+                    drPhoneNumber: "", empName: "", empPhone: "", designation: "", expiry: ""
+                  });
+                  setFilterPanelOpen(false);
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+              >
+                Reset
+              </button>
+              <button
+                onClick={() => setFilterPanelOpen(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {modalQR && (
         <div

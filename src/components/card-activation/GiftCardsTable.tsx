@@ -43,11 +43,13 @@ export default function GiftCardsTable({
 
   return (
     <div className="mt-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
-      <div className="w-full overflow-x-auto">
+      <div className="max-h-[450px] overflow-auto">
         <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
           <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-[#1f2937] border-b border-gray-300 dark:border-gray-600 text-xs uppercase font-semibold tracking-wide">
             <tr>
-              <th className="px-3 py-3"><input type="checkbox" checked={allSelected} onChange={() => onRowSelect("all")} /></th>
+              <th className="px-3 py-3">
+                <input type="checkbox" checked={allSelected} onChange={() => onRowSelect("all")} />
+              </th>
               <th className="px-3 py-3">Card No</th>
               <th className="px-3 py-3">KIT</th>
               <th className="px-3 py-3">Serial</th>
@@ -64,11 +66,6 @@ export default function GiftCardsTable({
               <th className="px-3 py-3">Created Date</th>
             </tr>
           </thead>
-        </table>
-      </div>
-
-      <div className="max-h-[450px] overflow-y-auto">
-        <table className="min-w-[1500px] w-full text-sm text-left text-gray-900 dark:text-gray-100">
           <tbody>
             {cards.length === 0 ? (
               <tr>
