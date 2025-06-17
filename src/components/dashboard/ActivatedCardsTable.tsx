@@ -96,7 +96,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
           <tbody>
             {pagedCards.length === 0 ? (
               <tr>
-                <td colSpan={10} className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700">
+                <td colSpan={10} className="text-center py-6 text-gray-400 font-medium border border-gray-200 dark:border-gray-700 dark:text-white">
                   No activated cards
                 </td>
               </tr>

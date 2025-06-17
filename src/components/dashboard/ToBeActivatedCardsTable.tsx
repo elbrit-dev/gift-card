@@ -133,27 +133,27 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                     key={idx}
                     className="hover:bg-gray-50 dark:hover:bg-gray-800 transition text-gray-800 dark:text-white"
                   >
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">
                       <input
                         type="checkbox"
                         checked={selectedCards.includes(card.cardNo)}
                         onChange={() => toggleSelect(card.cardNo)}
                       />
                     </td>
-                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">{card.cardNo || "--"}</td>
-                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">{card.kit || "--"}</td>
-                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700">{card.SL || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.salesTeam || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.hq || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.cardNo || "--"}</td>
+                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.kit || "--"}</td>
+                    <td className="px-3 py-2 font-mono break-all text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.SL || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.salesTeam || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.hq || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">
                       <span className="inline-block px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs font-semibold">
                         {card.status || "--"}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.drPhoneNumber || "--"}</td>
-                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.drName || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.verifyName || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.drPhoneNumber || "--"}</td>
+                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.drName || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.verifyName || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">
                       {card.verifyScore !== undefined && card.verifyScore !== null ? (
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold ${
@@ -170,10 +170,10 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                         <span className="text-gray-400">N/A</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.empName || "--"}</td>
-                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.designation || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.empPhone || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.expiry || "--"}</td>
+                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.empName || "--"}</td>
+                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.designation || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.empPhone || "--"}</td>
+                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.expiry || "--"}</td>
                   </tr>
                 ))
               )}
