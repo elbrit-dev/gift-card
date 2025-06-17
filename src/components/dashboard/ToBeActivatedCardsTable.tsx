@@ -33,7 +33,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
 }) => {
   const [page, setPage] = useState(1);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [modalQR, setModalQR] = useState<string | null>(null); // For popup
+  // const [modalQR, setModalQR] = useState<string | null>(null); // For popup
 
   const formattedCards = cards.map((card) => ({
     ...card,
@@ -104,9 +104,9 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                   <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                 </th>
                 {[
-                  "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status",
-                  "Dr Name", "Dr Phone", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
-                  "Emp Phone", "Expiry", "QR"
+                  "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone",
+                  "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
+                  "Emp Phone", "Expiry"
                 ].map((title, idx) => (
                   <th
                     key={idx}
@@ -174,21 +174,6 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                     <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700">{card.designation || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.empPhone || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">{card.expiry || "--"}</td>
-                    <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
-                      {card.qr ? (
-                        <img
-                          src={card.qr} // ✅ Use card.qr for thumbnail
-                          alt="QR"
-                          className="h-12 w-12 object-contain cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault(); // Prevent any accidental navigation
-                            setModalQR(card.qr || ""); // ✅ Set modal content from current card
-                          }}
-                        />
-                      ) : (
-                        <span className="text-gray-400">N/A</span>
-                      )}
-                    </td>
                   </tr>
                 ))
               )}
@@ -218,42 +203,6 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
           </div>
         )}
       </div>
-
-      {/* Modal Popup for QR */}
-      {modalQR && (
-        <div
-          className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto"
-          onClick={() => setModalQR(null)}
-        >
-          <div
-            className="bg-white p-5 rounded-lg relative shadow-xl max-w-sm w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl"
-              onClick={() => setModalQR(null)}
-            >
-              ×
-            </button>
-
-            <img
-              src={modalQR}
-              width={200}
-              alt="QR Enlarged"
-              className="object-contain mb-4"
-            />
-
-            {/* ✅ Extracted message link */}
-            <p className="text-sm font-semibold text-gray-700 mb-1">WhatsApp Message Link:</p>
-            <input
-              type="text"
-              value={new URL(modalQR).searchParams.get("data") || ""}
-              readOnly
-              className="w-full text-xs p-2 rounded border border-gray-300 bg-gray-50 font-mono text-gray-700"
-            />
-          </div>
-        </div>
-      )}
     </>
   );
 };
