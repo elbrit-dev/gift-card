@@ -30,14 +30,14 @@ const navItems: NavItem[] = [
     ],
     path: "/",
   },
-  // {
-  //   icon: <GridIcon />, // You can replace this with a product icon later
-  //   name: "Product",
-  //   subItems: [
-  //     { name: "Items", path: "/item-details", pro: false, icon: <FileIcon /> },
-  //   ],
-  //   path: "/item-details",
-  // }
+  {
+    icon: <GridIcon />,
+    name: "Product",
+    subItems: [
+      { name: "Items", path: "/Product", pro: false, icon: <FileIcon /> }, // updated path
+    ],
+    path: "/Product", // also updated
+  }
 ];
 
 
