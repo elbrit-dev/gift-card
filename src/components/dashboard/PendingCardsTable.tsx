@@ -275,52 +275,58 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
 
       {modalQR && (
         <div
-          className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center backdrop-blur-sm px-4"
           onClick={() => setModalQR(null)}
         >
           <div
-            className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-2xl max-w-md w-full relative"
+            className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-2xl w-full max-w-lg relative"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
-              className="absolute top-3 right-4 text-xl text-gray-400 hover:text-gray-800 dark:hover:text-white"
+              className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-800 dark:hover:text-white"
               onClick={() => setModalQR(null)}
             >
               &times;
             </button>
 
-            {/* QR Code Image */}
+            {/* QR Code */}
             <div className="flex justify-center mb-4">
               <img
                 src={modalQR}
                 alt="QR Code"
-                className="h-48 w-48 object-contain rounded-md shadow"
+                className="h-56 w-56 object-contain rounded-xl border border-gray-200 shadow-md"
               />
             </div>
 
-            {/* WhatsApp Message Link */}
-            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 text-center">
+            {/* Title */}
+            <h2 className="text-lg font-semibold text-center text-gray-800 dark:text-gray-200 mb-3">
               WhatsApp Message Link
-            </p>
+            </h2>
 
+            {/* Extracted Link */}
             {(() => {
               try {
                 const link = new URL(modalQR).searchParams.get("data");
                 return link ? (
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 text-sm"
-                  >
-                    Open in WhatsApp
-                  </a>
+                  <div className="text-center">
+                    <div
+                      onClick={() => {
+                        navigator.clipboard.writeText(link);
+                        alert("✅ Full link copied to clipboard");
+                      }}
+                      title={link}
+                      className="cursor-pointer text-sm text-green-600 dark:text-green-400 max-w-full truncate bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg font-mono inline-block"
+                    >
+                      {link}
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Click to copy full link</p>
+                  </div>
                 ) : (
-                  <p className="text-xs text-red-600 text-center">Invalid link</p>
+                  <p className="text-sm text-red-600 text-center">Invalid link</p>
                 );
               } catch {
-                return <p className="text-xs text-red-600 text-center">Invalid QR URL</p>;
+                return <p className="text-sm text-red-600 text-center">Invalid QR URL</p>;
               }
             })()}
           </div>

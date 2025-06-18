@@ -29,8 +29,17 @@ const navItems: NavItem[] = [
       { name: "QR generation", path: "/qr-generation", pro: false, icon: <FileIcon /> },
     ],
     path: "/",
-  }
+  },
+  // {
+  //   icon: <GridIcon />, // You can replace this with a product icon later
+  //   name: "Product",
+  //   subItems: [
+  //     { name: "Items", path: "/item-details", pro: false, icon: <FileIcon /> },
+  //   ],
+  //   path: "/item-details",
+  // }
 ];
+
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
