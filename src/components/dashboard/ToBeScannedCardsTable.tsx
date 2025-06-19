@@ -31,7 +31,7 @@ const ToBeScannedCardsTable: React.FC<ToBeScannedCardsTableProps> = ({
   const [modalQR, setModalQR] = useState<string | null>(null);
 
   const filteredCards = cards
-    .filter((card) => card.status.toLowerCase() === "drscanned")
+    .filter((card) => card.status.toLowerCase() === "formfilled")
     .filter((card) => {
       const query = searchQuery.toLowerCase();
       return Object.values(card).some((value) =>
