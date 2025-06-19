@@ -34,6 +34,7 @@ export async function GET() {
         "employeeCode",
         "drCode",
         "empName",
+        "amount",
         "drName",
         "hq",
         "qr",

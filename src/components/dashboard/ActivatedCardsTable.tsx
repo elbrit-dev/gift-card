@@ -43,9 +43,9 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
   const downloadSelectedAsCSV = () => {
     const selectedData = formattedCards.filter(card => selectedCards.includes(card.cardNo));
     const csv = [
-      ["Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Phone", "Expiry"],
+      ["Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Name", "Verify Name", "Verify Score", "Amount", "Emp Name", "Emp Phone", "Expiry"],
       ...selectedData.map(c => [
-        c.cardNo, c.salesTeam, c.hq, c.status, c.drName, c.drPhoneNumber,
+        c.cardNo, c.salesTeam, c.hq, c.status, c.drName, c.drPhoneNumber, c.verifyName, c.verifyScore, c.amount,
         c.empName, c.empPhone, c.expiry
       ].map(escapeCSV))
     ]
@@ -82,7 +82,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
               </th>
               {[
                 "Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Code",
-                "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Phone", "Expiry"
+                "Dr Name", "Verify Name", "Verify Score", "Amount", "Emp Name", "Emp Phone", "Expiry"
               ].map((title, idx) => (
                 <th
                   key={idx}
@@ -139,6 +139,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
                       <span className="text-gray-400">N/A</span>
                     )}
                   </td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{card.amount}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.empName}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.empPhone}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.expiry}</td>

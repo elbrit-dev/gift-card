@@ -13,6 +13,7 @@ interface DoctorScanPendingCard {
   drPhoneNumber: string;
   verifyName: string;
   verifyScore: string;
+  amount: string;
   empName: string;
   designation: string;
   empPhone: string;
@@ -63,12 +64,12 @@ const DoctorScanPendingCardsTable: React.FC<DoctorScanPendingCardsTableProps> = 
     const csv = [
       [
         "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status",
-        "Doctor Phone", "Doctor Code", "Doctor Name", "Verify Name", "Verify Score",
+        "Doctor Phone", "Doctor Code", "Doctor Name", "Verify Name", "Verify Score", "Amount",
         "Emp Name", "Designation", "Emp Phone", "Expiry", "QR"
       ],
       ...selectedData.map((c) => [
         c.cardNo, c.kit, c.SL, c.salesTeam, c.hq, c.status,
-        c.drPhoneNumber, c.drCode, c.drName, c.verifyName, c.verifyScore,
+        c.drPhoneNumber, c.drCode, c.drName, c.verifyName, c.verifyScore, c.amount,
         c.empName, c.designation, c.empPhone, c.expiry, c.qr || ""
       ]),
     ]
@@ -106,7 +107,7 @@ const DoctorScanPendingCardsTable: React.FC<DoctorScanPendingCardsTableProps> = 
               </th>
               {[
                 "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Code",
-                "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
+                "Dr Name", "Verify Name", "Verify Score","Amount", "Emp Name", "Emp Designation",
                 "Emp Phone", "Expiry"
               ].map((title, idx) => (
                 <th
@@ -172,6 +173,7 @@ const DoctorScanPendingCardsTable: React.FC<DoctorScanPendingCardsTableProps> = 
                       <span className="text-gray-400">N/A</span>
                     )}
                   </td>
+                  <td className="px-6 py-4 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.amount || "--"}</td>
                   <td className="px-6 py-4 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.empName || "--"}</td>
                   <td className="px-6 py-4 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.designation || "--"}</td>
                   <td className="px-6 py-4 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.empPhone || "--"}</td>

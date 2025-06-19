@@ -9,6 +9,7 @@ interface InProgressCard {
   drName: string;
   drCode: string;
   drPhoneNumber: string;
+  amount: string;
   empName: string;
   empPhone: string;
   expiryDate: string;
@@ -85,6 +86,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
         "Doctor Name",
         "Dcotor Code",
         "Doctor Phone",
+        "Amount",
         "Employee Name",
         "Employee Designation",
         "Employee Phone",
@@ -100,6 +102,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
           c.drName,
           c.drCode,
           c.drPhoneNumber,
+          c.amount,
           c.empName,
           c.designation,
           c.empPhone,
@@ -165,6 +168,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
                   "Doctor Name",
                   "Dcotor Code",
                   "Doctor Phone",
+                  "Amount",
                   "Employee Name",
                   "Employee Designation",
                   "Employee Phone",
@@ -225,6 +229,9 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
                     </td>
                     <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
                       {card.drPhoneNumber}
+                    </td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
+                      {card.amount}
                     </td>
                     <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
                       {card.empName}

@@ -23,6 +23,7 @@ export interface ToBeActivatedCard extends Card {
   drCode: string;
   empCode: string;
   empName: string;
+  amount: string;
   designation: string;
   verifyName: string;
   verifyScore: string;
