@@ -82,10 +82,9 @@ export default function DashboardPage() {
       />
 
 
-
+      <ActivatedCardsTable cards={summary.activated || []} />
       <ToBeActivatedCardsTable cards={summary.drscanned} />
       <ToBeScannedCardsTable cards={summary.received || []} />
-      <ActivatedCardsTable cards={summary.activated || []} />
       <PendingCardsTable cards={summary.inprocess || []} />
       <RecentActivityFeed activities={summary.activities} />
     </div>

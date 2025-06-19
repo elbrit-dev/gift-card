@@ -31,7 +31,7 @@ const ToBeScannedCardsTable: React.FC<ToBeScannedCardsTableProps> = ({
   const [modalQR, setModalQR] = useState<string | null>(null);
 
   const filteredCards = cards
-    .filter((card) => card.status.toLowerCase() === "received")
+    .filter((card) => card.status.toLowerCase() === "drscanned")
     .filter((card) => {
       const query = searchQuery.toLowerCase();
       return Object.values(card).some((value) =>
@@ -120,7 +120,7 @@ const ToBeScannedCardsTable: React.FC<ToBeScannedCardsTableProps> = ({
     <>
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
-          <div className="text-lg">Cards To Be Scanned</div>
+          <div className="text-lg">Doctor Scan Pending</div>
           <div className="flex items-center gap-2">
             <input
               type="text"
