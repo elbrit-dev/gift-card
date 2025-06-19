@@ -15,6 +15,7 @@ interface Card {
   hq: string;
   status: string;
   drName: string;
+  drCode: string;
   drPhoneNumber: string;
   verifyName: string;
   empName: string;
@@ -141,6 +142,7 @@ export default function CardActivationPage() {
         "Status",
         "HQ",
         "Dr Name",
+        "Dr Code",
         "Verify Name",
         "Verify Score",
         "Dr Phone",
@@ -160,6 +162,7 @@ export default function CardActivationPage() {
           c.status,
           c.hq,
           c.drName,
+          c.drCode,
           c.verifyName,
           c.verifyScore,
           c.drPhoneNumber,
