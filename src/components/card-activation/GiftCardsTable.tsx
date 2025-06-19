@@ -10,6 +10,7 @@ interface Card {
   amount: string;
   status: string;
   drName: string;
+  drCode: string;
   drPhoneNumber: string;
   verifyName: string;
   verifyScore: string;
@@ -59,6 +60,7 @@ export default function GiftCardsTable({
               <th className="px-3 py-3">Status</th>
               <th className="px-3 py-3">HQ</th>
               <th className="px-3 py-3">Sales Team</th>
+              <th className="px-3 py-3">Dr Code</th>
               <th className="px-3 py-3">Dr Name</th>
               <th className="px-3 py-3">Verify Name</th>
               <th className="px-3 py-3">Verify Score</th>
@@ -104,6 +106,7 @@ export default function GiftCardsTable({
                   </td>
                   <td className="px-3 py-3">{card.hq}</td>
                   <td className="px-3 py-3">{card.salesTeam}</td>
+                  <td className="px-3 py-3">{card.drCode}</td>
                   <td className="px-3 py-3">{card.drName}</td>
                   <td className="px-3 py-3">{card.verifyName}</td>
                   <td className="px-3 py-3">

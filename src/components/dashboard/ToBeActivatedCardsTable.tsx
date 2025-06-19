@@ -9,6 +9,7 @@ interface ToBeActivatedCard {
   hq: string;
   status: string;
   drName: string;
+  drCode: string;
   drPhoneNumber: string;
   verifyName: string;
   verifyScore: string;
@@ -60,7 +61,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
     const selectedData = formattedCards.filter((card) => selectedCards.includes(card.cardNo));
     const csv = [
       [
-        "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone",
+        "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Code",
         "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
         "Emp Phone", "Expiry", "QR Data"
       ],
@@ -104,7 +105,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                   <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                 </th>
                 {[
-                  "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone",
+                  "Gift Card No", "Kit", "SL", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Code",
                   "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Designation",
                   "Emp Phone", "Expiry"
                 ].map((title, idx) => (
@@ -151,6 +152,7 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
                       </span>
                     </td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.drPhoneNumber || "--"}</td>
+                    <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.drCode || "--"}</td>
                     <td className="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 dark:text-white">{card.drName || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.verifyName || "--"}</td>
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">

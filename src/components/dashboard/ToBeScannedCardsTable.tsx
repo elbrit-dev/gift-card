@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-interface InProgressCard {
+interface ToBeScannedCard {
   cardNo: string;
   salesTeam: string;
   hq: string;
@@ -16,22 +16,22 @@ interface InProgressCard {
   qr: string;
 }
 
-interface InProgressCardsTableProps {
-  cards: InProgressCard[];
+interface ToBeScannedCardsTableProps {
+  cards: ToBeScannedCard[];
   pageSize?: number;
 }
 
-const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
+const ToBeScannedCardsTable: React.FC<ToBeScannedCardsTableProps> = ({
   cards,
   pageSize = 5,
 }) => {
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [modalQR, setModalQR] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCards = cards
-    .filter((card) => card.status !== "active" && card.status !== "drscanned")
+    .filter((card) => card.status.toLowerCase() === "received")
     .filter((card) => {
       const query = searchQuery.toLowerCase();
       return Object.values(card).some((value) =>
@@ -43,16 +43,8 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
       expiry: card.expiryDate || "--",
     }));
 
-  const totalPages = Math.ceil(filteredCards.length / pageSize);
-  const pagedCards = filteredCards.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
-
-  const allCardNos = filteredCards.map((card) => card.cardNo);
-  const allSelected =
-    allCardNos.length > 0 &&
-    allCardNos.every((id) => selectedCards.includes(id));
+  const allCardNos = filteredCards.map((c) => c.cardNo);
+  const allSelected = allCardNos.length > 0 && allCardNos.every((id) => selectedCards.includes(id));
 
   const toggleSelectAll = () => {
     setSelectedCards(allSelected ? [] : allCardNos);
@@ -66,9 +58,9 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
     );
   };
 
-  const escapeCSV = (value: string) => {
-    if (!value) return "";
-    const escaped = value.replace(/"/g, '""');
+  const escapeCSV = (val: string) => {
+    if (!val) return "";
+    const escaped = val.replace(/"/g, '""');
     return `"${escaped}"`;
   };
 
@@ -76,6 +68,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
     const selectedData = filteredCards.filter((card) =>
       selectedCards.includes(card.cardNo)
     );
+
     const csv = [
       [
         "Gift Card No",
@@ -83,13 +76,13 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
         "HQ",
         "Status",
         "Doctor Name",
-        "Dcotor Code",
+        "Doctor Code",
         "Doctor Phone",
         "Employee Name",
-        "Employee Designation",
+        "Designation",
         "Employee Phone",
         "Expiry",
-        "QRCODE",
+        "QR Code",
       ],
       ...selectedData.map((c) =>
         [
@@ -115,16 +108,19 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "in_progress_cards.csv";
+    a.download = "to_be_scanned_cards.csv";
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const totalPages = Math.ceil(filteredCards.length / pageSize);
+  const pagedCards = filteredCards.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <>
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 px-4 py-3 border-b border-gray-100 dark:border-gray-800 font-semibold text-base md:text-lg text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
-          <div className="text-lg">Cards in Progress Activation</div>
+          <div className="text-lg">Cards To Be Scanned</div>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -151,11 +147,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800">
                 <th className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={toggleSelectAll}
-                  />
+                  <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                 </th>
                 {[
                   "Gift Card No",
@@ -163,10 +155,10 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
                   "HQ",
                   "Status",
                   "Doctor Name",
-                  "Dcotor Code",
+                  "Doctor Code",
                   "Doctor Phone",
                   "Employee Name",
-                  "Employee Designation",
+                  "Designation",
                   "Employee Phone",
                   "Expiry",
                   "QR Code",
@@ -184,18 +176,15 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
               {pagedCards.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={12}
+                    colSpan={13}
                     className="text-center py-6 text-gray-400 dark:text-gray-500 font-medium border border-gray-200 dark:border-gray-700"
                   >
-                    No cards in progress
+                    No cards marked 'received'
                   </td>
                 </tr>
               ) : (
                 pagedCards.map((card, idx) => (
-                  <tr
-                    key={idx}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                  >
+                  <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                     <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">
                       <input
                         type="checkbox"
@@ -206,48 +195,30 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
                     <td className="px-3 py-2 font-mono text-sm break-all border dark:border-gray-700 dark:text-white">
                       {card.cardNo}
                     </td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.salesTeam}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.hq}</td>
                     <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.salesTeam}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.hq}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      <span className="inline-block px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs font-semibold tracking-wide shadow-sm">
+                      <span className="inline-block px-2 py-1 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 text-xs font-semibold tracking-wide shadow-sm">
                         {card.status}
                       </span>
                     </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.drName}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.drCode}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.drPhoneNumber}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.empName}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.designation}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.empPhone}
-                    </td>
-                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
-                      {card.expiry}
-                    </td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.drName}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.drCode}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.drPhoneNumber}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.empName}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.designation}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.empPhone}</td>
+                    <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">{card.expiry}</td>
                     <td className="px-3 py-2 border dark:border-gray-700 dark:text-white">
                       {card.qr ? (
                         <img
                           src={card.qr}
                           alt="QR"
-                          className="h-12 w-12 object-contain cursor-pointer"
+                          className="h-10 w-10 object-contain cursor-pointer"
                           onClick={() => setModalQR(card.qr)}
                         />
                       ) : (
-                        <span className="text-gray-400 dark:text-white">N/A</span>
+                        <span className="text-gray-400">N/A</span>
                       )}
                     </td>
                   </tr>
@@ -280,6 +251,7 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
         )}
       </div>
 
+      {/* QR Modal */}
       {modalQR && (
         <div
           className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center backdrop-blur-sm px-4"
@@ -289,7 +261,6 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
             className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-2xl w-full max-w-lg relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-800 dark:hover:text-white"
               onClick={() => setModalQR(null)}
@@ -297,7 +268,6 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
               &times;
             </button>
 
-            {/* QR Code */}
             <div className="flex justify-center mb-4">
               <img
                 src={modalQR}
@@ -306,12 +276,10 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
               />
             </div>
 
-            {/* Title */}
             <h2 className="text-lg font-semibold text-center text-gray-800 dark:text-gray-200 mb-3">
               WhatsApp Message Link
             </h2>
 
-            {/* Extracted Link */}
             {(() => {
               try {
                 const link = new URL(modalQR).searchParams.get("data");
@@ -343,4 +311,4 @@ const InProgressCardsTable: React.FC<InProgressCardsTableProps> = ({
   );
 };
 
-export default InProgressCardsTable;
+export default ToBeScannedCardsTable;

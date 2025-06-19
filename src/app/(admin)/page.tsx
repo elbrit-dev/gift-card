@@ -6,6 +6,8 @@ import ActivatedCardsTable from "@/components/dashboard/ActivatedCardsTable";
 import PendingCardsTable from "@/components/dashboard/PendingCardsTable";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import ToBeActivatedCardsTable from "@/components/dashboard/ToBeActivatedCardsTable";
+import ToBeScannedCardsTable from "@/components/dashboard/ToBeScannedCardsTable";
+
 
 import { Card, ToBeActivatedCard, DetailedCard, Activity } from "@/types/cards";
 import { DashboardSummary } from "@/types/cards";
@@ -82,6 +84,7 @@ export default function DashboardPage() {
 
 
       <ToBeActivatedCardsTable cards={summary.drscanned} />
+      <ToBeScannedCardsTable cards={summary.received || []} />
       <ActivatedCardsTable cards={summary.activated || []} />
       <PendingCardsTable cards={summary.inprocess || []} />
       <RecentActivityFeed activities={summary.activities} />

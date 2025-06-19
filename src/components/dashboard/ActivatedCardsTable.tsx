@@ -81,7 +81,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
                 <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
               </th>
               {[
-                "Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone",
+                "Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Code",
                 "Dr Name", "Verify Name", "Verify Score", "Emp Name", "Emp Phone", "Expiry"
               ].map((title, idx) => (
                 <th
@@ -119,6 +119,7 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
                     </span>
                   </td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.drPhoneNumber}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{card.drCode}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{card.drName}</td>
                   <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">{card.verifyName || "--"}</td>
                   <td className="px-3 py-2 text-center border border-gray-200 dark:border-gray-700 dark:text-white">

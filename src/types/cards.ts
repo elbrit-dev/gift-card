@@ -20,6 +20,8 @@ export interface Card {
 export interface ToBeActivatedCard extends Card {
   drName: string;
   drPhoneNumber: string;
+  drCode: string;
+  empCode: string;
   empName: string;
   designation: string;
   verifyName: string;

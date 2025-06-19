@@ -6,6 +6,8 @@ import ActivatedCardsTable from "@/components/dashboard/ActivatedCardsTable";
 import PendingCardsTable from "@/components/dashboard/PendingCardsTable";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import ToBeActivatedCardsTable from "@/components/dashboard/ToBeActivatedCardsTable";
+import ToBeScannedCardsTable from "@/components/dashboard/ToBeScannedCardsTable";
+
 
 import { Card, ToBeActivatedCard, DetailedCard, Activity } from "@/types/cards";
 import { DashboardSummary } from "@/types/cards";
@@ -18,10 +20,11 @@ import { DashboardSummary } from "@/types/cards";
 //   pendingActivation: number;
 //   salesTeams: string[];
 //   tobeactivated: ToBeActivatedCard[];
-//   activated: DetailedCard[]; // ✅ FIXED HERE
-//   inprocess: DetailedCard[]; // ✅ FIXED HERE
+//   activated: DetailedCard[];
+//   inprocess: DetailedCard[]; 
 //   activities: Activity[];
 // }
+
 
 
 export default function DashboardPage() {
@@ -79,9 +82,11 @@ export default function DashboardPage() {
       />
 
 
+
       <ToBeActivatedCardsTable cards={summary.drscanned} />
+      <ToBeScannedCardsTable cards={summary.received || []} />
       <ActivatedCardsTable cards={summary.activated || []} />
-      <PendingCardsTable cards={summary.inprocess} />
+      <PendingCardsTable cards={summary.inprocess || []} />
       <RecentActivityFeed activities={summary.activities} />
     </div>
   );
