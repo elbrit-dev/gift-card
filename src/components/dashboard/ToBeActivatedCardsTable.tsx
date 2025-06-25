@@ -67,8 +67,8 @@ const ToBeActivatedCardsTable: React.FC<ToBeActivatedCardsTableProps> = ({
         "Emp Phone", "Expiry", "QR Data"
       ],
       ...selectedData.map((c) => [
-        c.cardNo, c.kit, c.SL, c.salesTeam, c.hq, c.status,
-        c.drName, c.drPhoneNumber, c.verifyName, c.verifyScore, c.amount, c.empName,
+        c.cardNo, c.kit, c.SL, c.salesTeam, c.hq, c.status, c.drPhoneNumber, c.drCode,
+        c.drName,  c.verifyName, c.verifyScore, c.amount, c.empName,
         c.designation, c.empPhone, c.expiry, c.qr || ""
       ]),
     ]

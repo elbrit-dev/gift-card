@@ -43,9 +43,10 @@ const ActivatedCardsTable: React.FC<ActivatedCardsTableProps> = ({ cards, pageSi
   const downloadSelectedAsCSV = () => {
     const selectedData = formattedCards.filter(card => selectedCards.includes(card.cardNo));
     const csv = [
-      ["Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Name", "Verify Name", "Verify Score", "Amount", "Emp Name", "Emp Phone", "Expiry"],
+      ["Gift Card No", "Sales Team", "HQ", "Status", "Dr Phone", "Dr Name", "Dr Code", "Verify Name", "Verify Score", "Amount", "Emp Name", "Emp Phone", "Expiry"],
       ...selectedData.map(c => [
-        c.cardNo, c.salesTeam, c.hq, c.status, c.drName, c.drPhoneNumber, c.verifyName, c.verifyScore, c.amount,
+        c.cardNo, c.salesTeam, c.hq, c.status, c.drPhoneNumber, c.drName, c.drCode,
+        c.verifyName, c.verifyScore, c.amount,
         c.empName, c.empPhone, c.expiry
       ].map(escapeCSV))
     ]
